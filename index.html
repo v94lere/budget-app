@@ -10,7 +10,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #f5f4f0; --surface: #ffffff; --text: #1a1a18; --text2: #7a7972; --text3: #b0afa8;
+      --bg: #f5f4f0; --text: #1a1a18; --text2: #7a7972; --text3: #b0afa8;
       --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
       --accent: #1a1a18; --accent-fg: #ffffff; --danger: #c0392b;
       --radius: 14px; --radius-sm: 9px;
@@ -53,7 +53,7 @@
     .entry-time { font-size:12px; color:var(--text2); margin-top:2px; }
     .del-btn { background:none; border:none; cursor:pointer; color:var(--text3); font-size:16px; padding:4px; line-height:1; }
     .files-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
-    .file-chip { display:flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); cursor:pointer; max-width:140px; }
+    .file-chip { display:flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); cursor:pointer; max-width:160px; }
     .file-chip span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
     .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
@@ -61,17 +61,17 @@
     .modal { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px)); width:100%; max-width:430px; animation:slideUp .25s ease; max-height:90dvh; overflow-y:auto; }
     @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
     .modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 20px; }
-    .modal-title { font-size:18px; font-weight:700; margin-bottom:20px; letter-spacing:-0.3px; }
+    .modal-title { font-size:18px; font-weight:700; margin-bottom:20px; }
     .field { margin-bottom:14px; }
     .field label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px; }
     .field input[type=text], .field input[type=number] { width:100%; padding:12px 14px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:inherit; outline:none; }
     .field input:focus { border-color:var(--accent); }
-    .file-upload-area { border:1.5px dashed var(--border2); border-radius:var(--radius-sm); padding:16px; text-align:center; cursor:pointer; background:var(--bg); color:var(--text2); font-size:14px; position:relative; }
-    .file-upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .file-upload-btn { display:block; width:100%; padding:13px; font-size:14px; border:1.5px dashed var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text2); cursor:pointer; font-family:inherit; text-align:center; }
+    .file-upload-btn:hover { border-color:var(--accent); }
     .file-preview { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); max-width:160px; }
+    .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); max-width:180px; }
     .file-preview-item span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .file-remove { background:none; border:none; cursor:pointer; color:var(--text3); font-size:13px; padding:0 0 0 4px; flex-shrink:0; line-height:1; }
+    .file-remove { background:none; border:none; cursor:pointer; color:var(--text3); font-size:13px; padding:0 0 0 4px; flex-shrink:0; }
     .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .modal-actions { display:flex; gap:10px; margin-top:20px; }
     .btn-cancel { flex:1; padding:14px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:none; cursor:pointer; font-size:15px; font-family:inherit; color:var(--text2); }
@@ -82,7 +82,7 @@
     #viewer-name { color:#fff; font-size:13px; margin-bottom:16px; opacity:0.7; max-width:300px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     #viewer-img { max-width:100%; max-height:70dvh; border-radius:12px; display:none; }
     #viewer-download { margin-top:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
-    #toast { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%) translateY(80px); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:all .3s ease; z-index:300; white-space:nowrap; }
+    #toast { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%) translateY(80px); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:all .3s ease; z-index:300; white-space:nowrap; pointer-events:none; }
     #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   </style>
 </head>
@@ -106,13 +106,13 @@
       <span class="app-title">Mon Budget</span>
       <div class="header-actions">
         <span class="sync-status" id="sync-status"></span>
-        <button class="add-btn" onclick="openModal()">+</button>
+        <button class="add-btn" id="open-modal-btn">+</button>
       </div>
     </div>
     <div class="month-nav">
-      <button class="nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+      <button class="nav-btn" id="prev-btn">&#8249;</button>
       <span class="month-label" id="month-label"></span>
-      <button class="nav-btn" onclick="changeMonth(1)">&#8250;</button>
+      <button class="nav-btn" id="next-btn">&#8250;</button>
     </div>
     <div class="totals">
       <div class="total-card"><div class="total-label">Total €</div><div class="total-value" id="total-price">—</div></div>
@@ -124,60 +124,72 @@
   <div class="safe-bot"></div>
 </div>
 
-<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
-  <div class="modal">
+<!-- input file caché, déclenché par le bouton -->
+<input type="file" id="file-input" multiple style="display:none" />
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nouvelle entrée</div>
-    <div class="field"><label>Titre</label><input type="text" id="f-title" placeholder="Ex: Courses, Médecin…" /></div>
+    <div class="field">
+      <label>Titre</label>
+      <input type="text" id="f-title" placeholder="Ex: Courses, Médecin…" />
+    </div>
     <div class="row">
-      <div class="field"><label>Prix (€)</label><input type="number" id="f-price" placeholder="0,00" step="0.01" min="0" inputmode="decimal" /></div>
-      <div class="field"><label>Temps (min)</label><input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" /></div>
+      <div class="field">
+        <label>Prix (€)</label>
+        <input type="number" id="f-price" placeholder="0,00" step="0.01" min="0" inputmode="decimal" />
+      </div>
+      <div class="field">
+        <label>Temps (min)</label>
+        <input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" />
+      </div>
     </div>
     <div class="field">
-      <label>Fichier joint (max 2 MB)</label>
-      <div class="file-upload-area">
-        📎 Appuyer pour joindre un fichier
-        <input type="file" id="f-files" multiple onchange="handleFiles(this)" />
-      </div>
+      <label>Fichiers joints (max 10 MB)</label>
+      <button type="button" class="file-upload-btn" id="pick-file-btn">📎 Appuyer pour joindre un fichier</button>
       <div class="file-preview" id="file-preview"></div>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-      <button class="btn-save" onclick="saveEntry()">Ajouter</button>
+      <button type="button" class="btn-cancel" id="cancel-btn">Annuler</button>
+      <button type="button" class="btn-save" id="save-btn">Ajouter</button>
     </div>
   </div>
 </div>
 
 <div id="file-viewer">
-  <button id="viewer-close" onclick="closeViewer()">✕</button>
+  <button id="viewer-close">✕</button>
   <div id="viewer-name"></div>
   <img id="viewer-img" alt="aperçu" />
-  <button id="viewer-download" onclick="downloadFile()">⬇ Télécharger</button>
+  <button id="viewer-download">⬇ Télécharger</button>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const GIST_ID   = "fe6bbcd9c76caa4c8539f370c6e31dd2";
-const GIST_FILE = "data.json";
-const MAX_FILE_BYTES = 2 * 1024 * 1024;
-const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+var GIST_ID   = "fe6bbcd9c76caa4c8539f370c6e31dd2";
+var GIST_FILE = "data.json";
+var MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+var MONTHS    = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 
-let GH_TOKEN = localStorage.getItem("gh_token") || "";
-let entries = [];
-let currentMonth = new Date().getMonth();
-let currentYear  = new Date().getFullYear();
-let pendingFiles = [];
-let viewerFile   = null;
+var GH_TOKEN     = localStorage.getItem("gh_token") || "";
+var entries      = [];
+var pendingFiles = [];
+var viewerFile   = null;
+var curMonth     = new Date().getMonth();
+var curYear      = new Date().getFullYear();
+
+// ── SETUP ──
+document.getElementById("s-token").addEventListener("keydown", function(e){ if(e.key==="Enter") setupToken(); });
 
 async function setupToken() {
-  const val = document.getElementById("s-token").value.trim();
-  const err = document.getElementById("setup-error");
+  var val = document.getElementById("s-token").value.trim();
+  var err = document.getElementById("setup-error");
   if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) {
     err.textContent = "Code invalide. Contactez votre fils."; return;
   }
   err.textContent = "Vérification…";
-  const ok = await testToken(val);
+  var ok = await testToken(val);
   if (!ok) { err.textContent = "Code incorrect ou expiré."; return; }
   localStorage.setItem("gh_token", val);
   GH_TOKEN = val;
@@ -189,25 +201,26 @@ async function setupToken() {
 
 async function testToken(token) {
   try {
-    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
       headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
     });
     return r.ok;
-  } catch { return false; }
+  } catch(e) { return false; }
 }
 
+// ── GIST ──
 async function loadData() {
   setSyncStatus("⏳");
   try {
-    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
       headers: { "Authorization": "token " + GH_TOKEN, "Accept": "application/vnd.github.v3+json" }
     });
     if (!r.ok) throw new Error();
-    const gist = await r.json();
-    const raw  = (gist.files[GIST_FILE] && gist.files[GIST_FILE].content) || "[]";
-    entries = JSON.parse(raw);
+    var gist = await r.json();
+    var raw  = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "[]";
+    entries  = JSON.parse(raw);
     setSyncStatus("✓");
-  } catch {
+  } catch(e) {
     entries = JSON.parse(localStorage.getItem("budget_local") || "[]");
     setSyncStatus("⚠️ hors ligne");
   }
@@ -217,9 +230,9 @@ async function saveData() {
   localStorage.setItem("budget_local", JSON.stringify(entries));
   setSyncStatus("⏳");
   try {
-    const body = { files: {} };
+    var body = { files: {} };
     body.files[GIST_FILE] = { content: JSON.stringify(entries) };
-    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
       method: "PATCH",
       headers: {
         "Authorization": "token " + GH_TOKEN,
@@ -231,7 +244,7 @@ async function saveData() {
     if (!r.ok) throw new Error();
     setSyncStatus("✓");
     showToast("Sauvegardé ✓");
-  } catch {
+  } catch(e) {
     setSyncStatus("⚠️ non sync");
     showToast("Sauvegarde locale uniquement");
   }
@@ -240,111 +253,145 @@ async function saveData() {
 function setSyncStatus(s) { document.getElementById("sync-status").textContent = s; }
 
 function showToast(msg) {
-  const t = document.getElementById("toast");
+  var t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2500);
+  setTimeout(function(){ t.classList.remove("show"); }, 2500);
 }
 
-function fmtPrice(v) { return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €"; }
-function fmtTime(min) { const h=Math.floor(min/60),m=min%60; return h+"h"+String(m).padStart(2,"0"); }
+// ── RENDER ──
+function fmtPrice(v) { return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
+function fmtTime(min) { var h=Math.floor(min/60),m=min%60; return h+"h"+String(m).padStart(2,"0"); }
 function fileIcon(type) {
   if (!type) return "📎";
   if (type.startsWith("image/")) return "🖼";
-  if (type === "application/pdf") return "📄";
+  if (type==="application/pdf") return "📄";
   return "📎";
 }
 
 function render() {
-  document.getElementById("month-label").textContent = MONTHS[currentMonth] + " " + currentYear;
-  const filtered = entries.filter(e => e.month === currentMonth && e.year === currentYear);
-  const totalPrice = filtered.reduce((s,e) => s + (e.price != null ? e.price : 0), 0);
-  const totalTime  = filtered.reduce((s,e) => s + (e.time  != null ? e.time  : 0), 0);
-  document.getElementById("total-price").textContent = filtered.some(e=>e.price!=null) ? fmtPrice(totalPrice) : "—";
-  document.getElementById("total-time").textContent  = filtered.some(e=>e.time!=null)  ? fmtTime(totalTime)   : "—";
-  const list = document.getElementById("entries-list");
+  document.getElementById("month-label").textContent = MONTHS[curMonth]+" "+curYear;
+  var filtered   = entries.filter(function(e){ return e.month===curMonth && e.year===curYear; });
+  var totalPrice = filtered.reduce(function(s,e){ return s+(e.price!=null?e.price:0); }, 0);
+  var totalTime  = filtered.reduce(function(s,e){ return s+(e.time!=null?e.time:0); }, 0);
+  document.getElementById("total-price").textContent = filtered.some(function(e){return e.price!=null;}) ? fmtPrice(totalPrice) : "—";
+  document.getElementById("total-time").textContent  = filtered.some(function(e){return e.time!=null;})  ? fmtTime(totalTime)   : "—";
+
+  var list = document.getElementById("entries-list");
   if (!filtered.length) {
     list.innerHTML = '<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>';
     return;
   }
-  list.innerHTML = filtered.slice().reverse().map(e => {
-    const filesHtml = e.files && e.files.length
-      ? '<div class="files-row">' + e.files.map(f =>
-          '<div class="file-chip" onclick="viewFile(\'' + e.id + '\',\'' + f.id + '\')">' +
-          '<span>' + fileIcon(f.type) + ' ' + f.name + '</span></div>'
-        ).join("") + '</div>'
-      : "";
+  list.innerHTML = filtered.slice().reverse().map(function(e) {
+    var filesHtml = "";
+    if (e.files && e.files.length) {
+      filesHtml = '<div class="files-row">' + e.files.map(function(f){
+        return '<div class="file-chip" data-eid="'+e.id+'" data-fid="'+f.id+'"><span>'+fileIcon(f.type)+" "+f.name+'</span></div>';
+      }).join("") + '</div>';
+    }
     return '<div class="entry">' +
       '<div class="entry-main">' +
         '<div class="entry-left">' +
-          '<div class="entry-title">' + e.title + '</div>' +
-          '<div class="entry-date">' + new Date(e.date).toLocaleDateString("fr-FR") + '</div>' +
+          '<div class="entry-title">'+e.title+'</div>' +
+          '<div class="entry-date">'+new Date(e.date).toLocaleDateString("fr-FR")+'</div>' +
         '</div>' +
         '<div class="entry-values">' +
-          (e.price != null ? '<div class="entry-price">' + fmtPrice(e.price) + '</div>' : '') +
-          (e.time  != null ? '<div class="entry-time">'  + fmtTime(e.time)   + '</div>' : '') +
+          (e.price!=null?'<div class="entry-price">'+fmtPrice(e.price)+'</div>':'') +
+          (e.time!=null?'<div class="entry-time">'+fmtTime(e.time)+'</div>':'') +
         '</div>' +
-        '<button class="del-btn" onclick="deleteEntry(\'' + e.id + '\')">✕</button>' +
+        '<button class="del-btn" data-id="'+e.id+'">✕</button>' +
       '</div>' + filesHtml + '</div>';
   }).join("");
+
+  // délégation d'événements — évite les onclick inline
+  list.querySelectorAll(".del-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){ deleteEntry(this.dataset.id); });
+  });
+  list.querySelectorAll(".file-chip").forEach(function(chip){
+    chip.addEventListener("click", function(){ viewFile(this.dataset.eid, this.dataset.fid); });
+  });
 }
 
+// ── NAVIGATION ──
+document.getElementById("prev-btn").addEventListener("click", function(){ changeMonth(-1); });
+document.getElementById("next-btn").addEventListener("click", function(){ changeMonth(1); });
+
 function changeMonth(dir) {
-  currentMonth += dir;
-  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-  if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  curMonth += dir;
+  if (curMonth > 11) { curMonth = 0; curYear++; }
+  if (curMonth < 0)  { curMonth = 11; curYear--; }
   render();
 }
 
+// ── MODAL ──
+document.getElementById("open-modal-btn").addEventListener("click", openModal);
+document.getElementById("cancel-btn").addEventListener("click", closeModal);
+document.getElementById("save-btn").addEventListener("click", saveEntry);
+document.getElementById("overlay").addEventListener("click", function(e){
+  if (e.target === this) closeModal();
+});
+// empêche le clic sur le modal de fermer
+document.getElementById("modal").addEventListener("click", function(e){ e.stopPropagation(); });
+
 function openModal() {
-  ["f-title","f-price","f-time"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("f-title").value = "";
+  document.getElementById("f-price").value = "";
+  document.getElementById("f-time").value  = "";
   pendingFiles = [];
   document.getElementById("file-preview").innerHTML = "";
   document.getElementById("overlay").classList.add("open");
-  setTimeout(() => document.getElementById("f-title").focus(), 150);
+  setTimeout(function(){ document.getElementById("f-title").focus(); }, 150);
 }
-function closeModal() { document.getElementById("overlay").classList.remove("open"); }
-function handleOverlayClick(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
 
-function handleFiles(input) {
-  const preview = document.getElementById("file-preview");
-  Array.from(input.files).forEach(file => {
-    if (file.size > MAX_FILE_BYTES) { showToast('"' + file.name + '" dépasse 2 MB'); return; }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const id = Date.now().toString() + Math.random().toString(36).slice(2);
-      pendingFiles.push({ id: id, name: file.name, b64: e.target.result, type: file.type });
-      const item = document.createElement("div");
+function closeModal() {
+  document.getElementById("overlay").classList.remove("open");
+}
+
+// ── FICHIERS ──
+document.getElementById("pick-file-btn").addEventListener("click", function(){
+  document.getElementById("file-input").click();
+});
+
+document.getElementById("file-input").addEventListener("change", function(){
+  var preview = document.getElementById("file-preview");
+  Array.from(this.files).forEach(function(file){
+    if (file.size > MAX_BYTES) { showToast('"'+file.name+'" dépasse 10 MB'); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+      pendingFiles.push({ id:id, name:file.name, b64:ev.target.result, type:file.type });
+      var item = document.createElement("div");
       item.className = "file-preview-item";
       item.dataset.id = id;
-      item.innerHTML = '<span>📎 ' + file.name + '</span><button class="file-remove" onclick="removePending(\'' + id + '\')">✕</button>';
+      item.innerHTML = '<span>📎 '+file.name+'</span><button class="file-remove">✕</button>';
+      item.querySelector(".file-remove").addEventListener("click", function(){ removePending(id); });
       preview.appendChild(item);
     };
     reader.readAsDataURL(file);
   });
-  input.value = "";
-}
+  this.value = ""; // reset pour permettre re-sélection du même fichier
+});
 
 function removePending(id) {
-  pendingFiles = pendingFiles.filter(f => f.id !== id);
-  const el = document.querySelector('.file-preview-item[data-id="' + id + '"]');
+  pendingFiles = pendingFiles.filter(function(f){ return f.id !== id; });
+  var el = document.querySelector('.file-preview-item[data-id="'+id+'"]');
   if (el) el.remove();
 }
 
 async function saveEntry() {
-  const title = document.getElementById("f-title").value.trim();
+  var title = document.getElementById("f-title").value.trim();
   if (!title) { document.getElementById("f-title").focus(); return; }
-  const p = document.getElementById("f-price").value;
-  const t = document.getElementById("f-time").value;
+  var p = document.getElementById("f-price").value;
+  var t = document.getElementById("f-time").value;
   entries.push({
     id:    Date.now().toString(),
     title: title,
     price: p !== "" ? parseFloat(p) : null,
     time:  t !== "" ? parseInt(t)   : null,
     date:  new Date().toISOString(),
-    month: currentMonth,
-    year:  currentYear,
-    files: pendingFiles.map(f => ({ id:f.id, name:f.name, b64:f.b64, type:f.type }))
+    month: curMonth,
+    year:  curYear,
+    files: pendingFiles.map(function(f){ return {id:f.id, name:f.name, b64:f.b64, type:f.type}; })
   });
   closeModal();
   render();
@@ -352,42 +399,49 @@ async function saveEntry() {
 }
 
 async function deleteEntry(id) {
-  entries = entries.filter(e => e.id !== id);
+  entries = entries.filter(function(e){ return e.id !== id; });
   render();
   await saveData();
 }
 
+// ── FILE VIEWER ──
+document.getElementById("viewer-close").addEventListener("click", closeViewer);
+document.getElementById("viewer-download").addEventListener("click", downloadFile);
+
 function viewFile(entryId, fileId) {
-  const entry = entries.find(e => e.id === entryId);
-  if (!entry) return;
-  const file = entry.files && entry.files.find(f => f.id === fileId);
+  var entry = entries.find(function(e){ return e.id===entryId; });
+  if (!entry || !entry.files) return;
+  var file = entry.files.find(function(f){ return f.id===fileId; });
   if (!file) return;
   viewerFile = file;
   document.getElementById("viewer-name").textContent = file.name;
-  const img = document.getElementById("viewer-img");
+  var img = document.getElementById("viewer-img");
   if (file.type && file.type.startsWith("image/")) { img.src = file.b64; img.style.display = "block"; }
   else { img.style.display = "none"; }
   document.getElementById("file-viewer").classList.add("open");
 }
+
 function closeViewer() {
   document.getElementById("file-viewer").classList.remove("open");
   document.getElementById("viewer-img").src = "";
   viewerFile = null;
 }
+
 function downloadFile() {
   if (!viewerFile) return;
-  const a = document.createElement("a");
+  var a = document.createElement("a");
   a.href = viewerFile.b64;
   a.download = viewerFile.name;
   a.click();
 }
 
-(function init() {
+// ── INIT ──
+(function(){
   if (!GH_TOKEN) {
     document.getElementById("setup-screen").style.display = "flex";
   } else {
     document.getElementById("app-screen").style.display = "block";
-    loadData().then(render);
+    loadData().then(function(){ render(); });
   }
 })();
 </script>
