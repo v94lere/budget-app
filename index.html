@@ -8,41 +8,36 @@
   <meta name="apple-mobile-web-app-title" content="Mon Budget" />
   <title>Mon Budget</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #f5f4f0; --text: #1a1a18; --text2: #7a7972; --text3: #b0afa8;
       --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
-      --accent: #1a1a18; --accent-fg: #ffffff; --danger: #c0392b;
+      --accent: #1a1a18; --accent-fg: #fff; --danger: #c0392b;
       --radius: 14px; --radius-sm: 9px;
     }
-    body { font-family: -apple-system,'SF Pro Text',sans-serif; background: var(--bg); color: var(--text); min-height:100dvh; }
-
-    #setup-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:32px 24px; gap:24px; }
+    body { font-family: -apple-system,'SF Pro Text',sans-serif; background:var(--bg); color:var(--text); }
+    #setup-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:32px 24px; gap:24px; }
     .setup-icon { width:72px; height:72px; background:var(--accent); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; }
-    .setup-title { font-size:22px; font-weight:700; letter-spacing:-0.5px; text-align:center; }
+    .setup-title { font-size:22px; font-weight:700; text-align:center; }
     .setup-sub { font-size:14px; color:var(--text2); text-align:center; line-height:1.6; max-width:280px; }
     .setup-form { width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px; }
     .setup-form input { width:100%; padding:14px 16px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; color:var(--text); outline:none; font-family:inherit; }
-    .setup-form input:focus { border-color:var(--accent); }
-    .setup-btn { width:100%; padding:14px; font-size:16px; font-weight:600; background:var(--accent); color:var(--accent-fg); border:none; border-radius:var(--radius-sm); cursor:pointer; font-family:inherit; }
+    .setup-btn { width:100%; padding:14px; font-size:16px; font-weight:600; background:var(--accent); color:#fff; border:none; border-radius:var(--radius-sm); font-family:inherit; }
     .setup-error { font-size:13px; color:var(--danger); text-align:center; min-height:18px; }
-
     #app-screen { display:none; }
-    .safe-top { height:env(safe-area-inset-top,0px); }
-    .safe-bot { height:calc(env(safe-area-inset-bottom,0px) + 8px); }
-    .app { max-width:430px; margin:0 auto; padding:0 16px; }
+    .app { max-width:430px; margin:0 auto; padding:0 16px; padding-top:env(safe-area-inset-top,0px); }
     .app-header { display:flex; justify-content:space-between; align-items:center; padding:20px 0 16px; }
     .app-title { font-size:28px; font-weight:700; letter-spacing:-0.8px; }
     .header-actions { display:flex; gap:8px; align-items:center; }
     .sync-status { font-size:11px; color:var(--text3); }
-    .add-btn { width:44px; height:44px; border-radius:50%; background:var(--accent); border:none; color:#fff; font-size:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-appearance:none; }
+    .add-btn { width:44px; height:44px; border-radius:50%; background:var(--accent); border:none; color:#fff; font-size:24px; line-height:44px; text-align:center; display:block; cursor:pointer; font-family:inherit; }
     .month-nav { display:flex; align-items:center; justify-content:space-between; background:#fff; border-radius:var(--radius); padding:10px 16px; margin-bottom:14px; border:1px solid var(--border); }
-    .nav-btn { background:none; border:none; font-size:20px; color:var(--text2); cursor:pointer; padding:8px 12px; -webkit-appearance:none; }
+    .nav-btn { background:none; border:none; font-size:20px; color:var(--text2); padding:8px 12px; font-family:inherit; }
     .month-label { font-size:15px; font-weight:600; }
     .totals { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
     .total-card { background:#fff; border-radius:var(--radius); padding:14px 16px; border:1px solid var(--border); }
     .total-label { font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text3); margin-bottom:4px; }
-    .total-value { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+    .total-value { font-size:22px; font-weight:700; }
     .section-title { font-size:13px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
     .entries { display:flex; flex-direction:column; gap:8px; padding-bottom:40px; }
     .entry { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:13px 14px; }
@@ -53,43 +48,39 @@
     .entry-values { text-align:right; flex-shrink:0; }
     .entry-price { font-size:15px; font-weight:600; }
     .entry-time { font-size:12px; color:var(--text2); margin-top:2px; }
-    .del-btn { background:none; border:none; cursor:pointer; color:var(--text3); font-size:18px; padding:6px; line-height:1; -webkit-appearance:none; min-width:32px; min-height:32px; }
+    .del-btn { background:none; border:none; color:var(--text3); font-size:18px; padding:6px; min-width:32px; min-height:32px; font-family:inherit; }
     .files-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
-    .file-chip { display:flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:6px 10px; font-size:12px; color:var(--text2); cursor:pointer; max-width:160px; }
+    .file-chip { display:inline-flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:6px 10px; font-size:12px; color:var(--text2); max-width:160px; }
     .file-chip span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
 
-    /* MODAL — backdrop séparé du modal */
-    #backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; }
-    #backdrop.open { display:block; }
-    #modal { display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:24px 24px 0 0; padding:28px 20px 40px; max-width:430px; margin:0 auto; z-index:101; max-height:92dvh; overflow-y:auto; animation:slideUp .25s ease; }
-    #modal.open { display:block; }
-    @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+    /* MODAL — inline dans la page, pas fixed */
+    #modal-wrap { display:none; background:rgba(0,0,0,0.4); padding:60px 0 0; min-height:100vh; }
+    #modal-wrap.open { display:block; }
+    #modal-box { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px 50px; min-height:60vh; }
     .modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 20px; }
     .modal-title { font-size:18px; font-weight:700; margin-bottom:20px; }
     .field { margin-bottom:14px; }
     .field label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px; }
-    .field input[type=text], .field input[type=number] { width:100%; padding:12px 14px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:inherit; outline:none; -webkit-appearance:none; }
-    .field input:focus { border-color:var(--accent); }
-    .file-upload-btn { display:block; width:100%; padding:14px; font-size:14px; border:1.5px dashed var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text2); cursor:pointer; font-family:inherit; text-align:center; -webkit-appearance:none; }
+    .field input[type=text], .field input[type=number] { width:100%; padding:13px 14px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:inherit; outline:none; display:block; }
+    .file-upload-btn { width:100%; padding:14px; font-size:14px; border:1.5px dashed var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text2); font-family:inherit; text-align:center; display:block; }
     .file-preview { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:5px 8px; font-size:12px; color:var(--text2); max-width:180px; }
-    .file-preview-item span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .file-remove { background:none; border:none; cursor:pointer; color:var(--text3); font-size:14px; padding:0 0 0 6px; flex-shrink:0; -webkit-appearance:none; }
+    .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:5px 8px; font-size:12px; color:var(--text2); }
+    .file-preview-item span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px; }
+    .file-remove { background:none; border:none; color:var(--text3); font-size:14px; padding:0 0 0 6px; font-family:inherit; }
     .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .modal-actions { display:flex; gap:10px; margin-top:24px; }
-    .btn-cancel { flex:1; padding:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:none; cursor:pointer; font-size:15px; font-family:inherit; color:var(--text2); -webkit-appearance:none; }
-    .btn-save { flex:2; padding:16px; border:none; border-radius:var(--radius-sm); background:var(--accent); color:#fff; cursor:pointer; font-size:15px; font-weight:600; font-family:inherit; -webkit-appearance:none; min-height:52px; }
+    .btn-cancel { flex:1; padding:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; font-size:15px; font-family:inherit; color:var(--text2); }
+    .btn-save { flex:2; padding:16px; border:none; border-radius:var(--radius-sm); background:var(--accent); color:#fff; font-size:15px; font-weight:600; font-family:inherit; }
 
     #file-viewer { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
     #file-viewer.open { display:flex; }
-    #viewer-close { position:absolute; top:calc(16px + env(safe-area-inset-top,0px)); right:16px; background:none; border:none; color:#fff; font-size:28px; cursor:pointer; padding:8px; }
-    #viewer-name { color:#fff; font-size:13px; margin-bottom:16px; opacity:0.7; max-width:300px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #viewer-img { max-width:100%; max-height:70dvh; border-radius:12px; display:none; }
-    #viewer-download { margin-top:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
-
-    #toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(80px); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:all .3s ease; z-index:400; white-space:nowrap; pointer-events:none; }
-    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    #viewer-close { position:absolute; top:40px; right:16px; background:none; border:none; color:#fff; font-size:28px; padding:8px; }
+    #viewer-name { color:#fff; font-size:13px; margin-bottom:16px; opacity:0.7; max-width:300px; text-align:center; }
+    #viewer-img { max-width:100%; max-height:70vh; border-radius:12px; display:none; }
+    #viewer-download { margin-top:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:600; font-family:inherit; }
+    #toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; z-index:500; pointer-events:none; }
+    #toast.show { opacity:1; }
   </style>
 </head>
 <body>
@@ -101,24 +92,23 @@
   <div class="setup-form">
     <input type="password" id="s-token" placeholder="Code d'accès" autocomplete="off" />
     <div class="setup-error" id="setup-error"></div>
-    <button class="setup-btn" id="setup-btn">Continuer</button>
+    <button class="setup-btn" onclick="setupToken()">Continuer</button>
   </div>
 </div>
 
 <div id="app-screen">
-  <div class="safe-top"></div>
   <div class="app">
     <div class="app-header">
       <span class="app-title">Mon Budget</span>
       <div class="header-actions">
         <span class="sync-status" id="sync-status"></span>
-        <button class="add-btn" id="open-modal-btn">+</button>
+        <button class="add-btn" onclick="openModal()">+</button>
       </div>
     </div>
     <div class="month-nav">
-      <button class="nav-btn" id="prev-btn">&#8249;</button>
+      <button class="nav-btn" onclick="changeMonth(-1)">&#8249;</button>
       <span class="month-label" id="month-label"></span>
-      <button class="nav-btn" id="next-btn">&#8250;</button>
+      <button class="nav-btn" onclick="changeMonth(1)">&#8250;</button>
     </div>
     <div class="totals">
       <div class="total-card"><div class="total-label">Total €</div><div class="total-value" id="total-price">—</div></div>
@@ -127,46 +117,46 @@
     <div class="section-title">Entrées</div>
     <div class="entries" id="entries-list"></div>
   </div>
-  <div class="safe-bot"></div>
 </div>
 
-<input type="file" id="file-input" multiple style="display:none" />
-
-<!-- backdrop et modal SÉPARÉS -->
-<div id="backdrop"></div>
-<div id="modal">
-  <div class="modal-handle"></div>
-  <div class="modal-title">Nouvelle entrée</div>
-  <div class="field">
-    <label>Titre</label>
-    <input type="text" id="f-title" placeholder="Ex: Courses, Médecin…" autocomplete="off" />
-  </div>
-  <div class="row">
+<!-- MODAL inline — pas fixed, scroll naturel -->
+<div id="modal-wrap" onclick="onWrapClick(event)">
+  <div id="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nouvelle entrée</div>
     <div class="field">
-      <label>Prix (€)</label>
-      <input type="number" id="f-price" placeholder="0,00" step="0.01" min="0" inputmode="decimal" />
+      <label>Titre</label>
+      <input type="text" id="f-title" placeholder="Ex: Courses, Médecin…" autocomplete="off" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Prix (€)</label>
+        <input type="number" id="f-price" placeholder="0,00" step="0.01" min="0" inputmode="decimal" />
+      </div>
+      <div class="field">
+        <label>Temps (min)</label>
+        <input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" />
+      </div>
     </div>
     <div class="field">
-      <label>Temps (min)</label>
-      <input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" />
+      <label>Fichiers joints (max 10 MB)</label>
+      <button type="button" class="file-upload-btn" onclick="document.getElementById('file-input').click()">📎 Appuyer pour joindre un fichier</button>
+      <div class="file-preview" id="file-preview"></div>
     </div>
-  </div>
-  <div class="field">
-    <label>Fichiers joints (max 10 MB)</label>
-    <button type="button" class="file-upload-btn" id="pick-file-btn">📎 Appuyer pour joindre un fichier</button>
-    <div class="file-preview" id="file-preview"></div>
-  </div>
-  <div class="modal-actions">
-    <button type="button" class="btn-cancel" id="cancel-btn">Annuler</button>
-    <button type="button" class="btn-save" id="save-btn">Ajouter</button>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button type="button" class="btn-save" onclick="doSave()">Ajouter</button>
+    </div>
   </div>
 </div>
+
+<input type="file" id="file-input" multiple style="display:none" onchange="handleFiles(this)" />
 
 <div id="file-viewer">
-  <button id="viewer-close">✕</button>
+  <button id="viewer-close" onclick="closeViewer()">✕</button>
   <div id="viewer-name"></div>
-  <img id="viewer-img" alt="aperçu" />
-  <button id="viewer-download">⬇ Télécharger</button>
+  <img id="viewer-img" alt="" />
+  <button id="viewer-download" onclick="downloadFile()">⬇ Télécharger</button>
 </div>
 
 <div id="toast"></div>
@@ -176,27 +166,23 @@ var GIST_ID   = "fe6bbcd9c76caa4c8539f370c6e31dd2";
 var GIST_FILE = "data.json";
 var MAX_BYTES = 10 * 1024 * 1024;
 var MONTHS    = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-
-var GH_TOKEN     = localStorage.getItem("gh_token") || "";
-var entries      = [];
-var pendingFiles = [];
-var viewerFile   = null;
-var curMonth     = new Date().getMonth();
-var curYear      = new Date().getFullYear();
+var GH_TOKEN  = localStorage.getItem("gh_token") || "";
+var entries   = [];
+var pending   = [];
+var viewer    = null;
+var curMonth  = new Date().getMonth();
+var curYear   = new Date().getFullYear();
 
 // ── SETUP ──
-document.getElementById("setup-btn").addEventListener("click", setupToken);
-document.getElementById("s-token").addEventListener("keydown", function(e){ if(e.key==="Enter") setupToken(); });
-
 async function setupToken() {
   var val = document.getElementById("s-token").value.trim();
   var err = document.getElementById("setup-error");
-  if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) {
-    err.textContent = "Code invalide."; return;
-  }
+  if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) { err.textContent="Code invalide."; return; }
   err.textContent = "Vérification…";
-  var ok = await testToken(val);
-  if (!ok) { err.textContent = "Code incorrect ou expiré."; return; }
+  try {
+    var r = await fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+val,"Accept":"application/vnd.github.v3+json"} });
+    if (!r.ok) throw new Error();
+  } catch(e) { err.textContent="Code incorrect ou expiré."; return; }
   localStorage.setItem("gh_token", val);
   GH_TOKEN = val;
   document.getElementById("setup-screen").style.display = "none";
@@ -205,260 +191,137 @@ async function setupToken() {
   render();
 }
 
-async function testToken(token) {
-  try {
-    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
-      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
-    });
-    return r.ok;
-  } catch(e) { return false; }
-}
-
 // ── GIST ──
 async function loadData() {
   setSyncStatus("⏳");
   try {
-    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
-      headers: { "Authorization": "token " + GH_TOKEN, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (!r.ok) throw new Error();
+    var r    = await fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+GH_TOKEN,"Accept":"application/vnd.github.v3+json"} });
     var gist = await r.json();
-    var raw  = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "[]";
-    entries  = JSON.parse(raw);
+    entries  = JSON.parse(gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "[]");
     setSyncStatus("✓");
   } catch(e) {
-    entries = JSON.parse(localStorage.getItem("budget_local") || "[]");
-    setSyncStatus("⚠️ hors ligne");
+    entries = JSON.parse(localStorage.getItem("budget_local")||"[]");
+    setSyncStatus("⚠️");
   }
 }
 
-async function saveData() {
+function saveData() {
   localStorage.setItem("budget_local", JSON.stringify(entries));
   setSyncStatus("⏳");
-  try {
-    var body = { files: {} };
-    body.files[GIST_FILE] = { content: JSON.stringify(entries) };
-    var r = await fetch("https://api.github.com/gists/" + GIST_ID, {
-      method: "PATCH",
-      headers: {
-        "Authorization": "token " + GH_TOKEN,
-        "Accept": "application/vnd.github.v3+json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    });
-    if (!r.ok) throw new Error();
-    setSyncStatus("✓");
-    showToast("Sauvegardé ✓");
-  } catch(e) {
-    setSyncStatus("⚠️ non sync");
-    showToast("Sauvegarde locale uniquement");
-  }
+  var body = {files:{}}; body.files[GIST_FILE]={content:JSON.stringify(entries)};
+  fetch("https://api.github.com/gists/"+GIST_ID, {
+    method:"PATCH",
+    headers:{"Authorization":"token "+GH_TOKEN,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  }).then(function(r){ setSyncStatus(r.ok?"✓":"⚠️"); showToast(r.ok?"Sauvegardé ✓":"Non synchronisé"); })
+    .catch(function(){ setSyncStatus("⚠️"); });
 }
 
-function setSyncStatus(s) { document.getElementById("sync-status").textContent = s; }
-
+function setSyncStatus(s) { document.getElementById("sync-status").textContent=s; }
 function showToast(msg) {
-  var t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(function(){ t.classList.remove("show"); }, 2500);
+  var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); },2000);
 }
 
 // ── RENDER ──
-function fmtPrice(v) { return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
-function fmtTime(min) { var h=Math.floor(min/60),m=min%60; return h+"h"+String(m).padStart(2,"0"); }
-function fileIcon(type) {
-  if (!type) return "📎";
-  if (type.startsWith("image/")) return "🖼";
-  if (type==="application/pdf") return "📄";
-  return "📎";
-}
+function fmtP(v){ return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
+function fmtT(m){ var h=Math.floor(m/60),mn=m%60; return h+"h"+String(mn).padStart(2,"0"); }
+function fIcon(t){ if(!t)return"📎"; if(t.startsWith("image/"))return"🖼"; if(t==="application/pdf")return"📄"; return"📎"; }
 
 function render() {
   document.getElementById("month-label").textContent = MONTHS[curMonth]+" "+curYear;
-  var filtered   = entries.filter(function(e){ return e.month===curMonth && e.year===curYear; });
-  var totalPrice = filtered.reduce(function(s,e){ return s+(e.price!=null?e.price:0); }, 0);
-  var totalTime  = filtered.reduce(function(s,e){ return s+(e.time!=null?e.time:0); }, 0);
-  document.getElementById("total-price").textContent = filtered.some(function(e){return e.price!=null;}) ? fmtPrice(totalPrice) : "—";
-  document.getElementById("total-time").textContent  = filtered.some(function(e){return e.time!=null;})  ? fmtTime(totalTime)   : "—";
-
-  var list = document.getElementById("entries-list");
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>';
-    return;
-  }
-  list.innerHTML = filtered.slice().reverse().map(function(e) {
-    var filesHtml = "";
-    if (e.files && e.files.length) {
-      filesHtml = '<div class="files-row">' + e.files.map(function(f){
-        return '<div class="file-chip" data-eid="'+e.id+'" data-fid="'+f.id+'"><span>'+fileIcon(f.type)+" "+f.name+'</span></div>';
-      }).join("") + '</div>';
-    }
-    return '<div class="entry">' +
-      '<div class="entry-main">' +
-        '<div class="entry-left">' +
-          '<div class="entry-title">'+e.title+'</div>' +
-          '<div class="entry-date">'+new Date(e.date).toLocaleDateString("fr-FR")+'</div>' +
-        '</div>' +
-        '<div class="entry-values">' +
-          (e.price!=null?'<div class="entry-price">'+fmtPrice(e.price)+'</div>':'') +
-          (e.time!=null?'<div class="entry-time">'+fmtTime(e.time)+'</div>':'') +
-        '</div>' +
-        '<button class="del-btn" data-id="'+e.id+'">✕</button>' +
-      '</div>' + filesHtml + '</div>';
+  var f = entries.filter(function(e){ return e.month===curMonth&&e.year===curYear; });
+  document.getElementById("total-price").textContent = f.some(function(e){return e.price!=null;}) ? fmtP(f.reduce(function(s,e){return s+(e.price||0);},0)) : "—";
+  document.getElementById("total-time").textContent  = f.some(function(e){return e.time!=null;})  ? fmtT(f.reduce(function(s,e){return s+(e.time||0);},0))  : "—";
+  var list=document.getElementById("entries-list");
+  if(!f.length){ list.innerHTML='<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>'; return; }
+  list.innerHTML=f.slice().reverse().map(function(e){
+    var fh=e.files&&e.files.length?'<div class="files-row">'+e.files.map(function(f){
+      return '<div class="file-chip" onclick="viewFile(\''+e.id+'\',\''+f.id+'\')"><span>'+fIcon(f.type)+" "+f.name+'</span></div>';
+    }).join("")+'</div>':"";
+    return '<div class="entry"><div class="entry-main">'+
+      '<div class="entry-left"><div class="entry-title">'+e.title+'</div><div class="entry-date">'+new Date(e.date).toLocaleDateString("fr-FR")+'</div></div>'+
+      '<div class="entry-values">'+(e.price!=null?'<div class="entry-price">'+fmtP(e.price)+'</div>':'')+(e.time!=null?'<div class="entry-time">'+fmtT(e.time)+'</div>':'')+'</div>'+
+      '<button class="del-btn" onclick="delEntry(\''+e.id+'\')">✕</button>'+
+      '</div>'+fh+'</div>';
   }).join("");
-
-  list.querySelectorAll(".del-btn").forEach(function(btn){
-    btn.addEventListener("click", function(){ deleteEntry(this.dataset.id); });
-  });
-  list.querySelectorAll(".file-chip").forEach(function(chip){
-    chip.addEventListener("click", function(){ viewFile(this.dataset.eid, this.dataset.fid); });
-  });
 }
 
-// ── NAVIGATION ──
-document.getElementById("prev-btn").addEventListener("click", function(){ changeMonth(-1); });
-document.getElementById("next-btn").addEventListener("click", function(){ changeMonth(1); });
+function changeMonth(d){ curMonth+=d; if(curMonth>11){curMonth=0;curYear++;} if(curMonth<0){curMonth=11;curYear--;} render(); }
 
-function changeMonth(dir) {
-  curMonth += dir;
-  if (curMonth > 11) { curMonth = 0; curYear++; }
-  if (curMonth < 0)  { curMonth = 11; curYear--; }
-  render();
-}
-
-// ── MODAL — backdrop et modal séparés, pas de stopPropagation ──
+// ── MODAL ──
 function openModal() {
-  document.getElementById("f-title").value = "";
-  document.getElementById("f-price").value = "";
-  document.getElementById("f-time").value  = "";
-  pendingFiles = [];
-  document.getElementById("file-preview").innerHTML = "";
-  document.getElementById("backdrop").classList.add("open");
-  document.getElementById("modal").classList.add("open");
-  setTimeout(function(){ document.getElementById("f-title").focus(); }, 200);
+  document.getElementById("f-title").value="";
+  document.getElementById("f-price").value="";
+  document.getElementById("f-time").value="";
+  document.getElementById("file-preview").innerHTML="";
+  pending=[];
+  document.getElementById("modal-wrap").classList.add("open");
+  window.scrollTo(0,0);
 }
+function closeModal() { document.getElementById("modal-wrap").classList.remove("open"); }
+function onWrapClick(e) { if(e.target===document.getElementById("modal-wrap")) closeModal(); }
 
-function closeModal() {
-  document.getElementById("backdrop").classList.remove("open");
-  document.getElementById("modal").classList.remove("open");
-}
-
-document.getElementById("open-modal-btn").addEventListener("click", function(e){
-  e.stopPropagation();
-  openModal();
-});
-document.getElementById("backdrop").addEventListener("click", closeModal);
-document.getElementById("cancel-btn").addEventListener("click", closeModal);
-
-// ── SAVE — synchrone, pas d'async sur le handler ──
-document.getElementById("save-btn").addEventListener("touchend", function(e){
-  e.preventDefault();
-  var title = document.getElementById("f-title").value.trim();
-  if (!title) { document.getElementById("f-title").focus(); return; }
-  var p = document.getElementById("f-price").value;
-  var t = document.getElementById("f-time").value;
-  var newEntry = {
-    id:    Date.now().toString(),
-    title: title,
-    price: p !== "" ? parseFloat(p) : null,
-    time:  t !== "" ? parseInt(t)   : null,
-    date:  new Date().toISOString(),
-    month: curMonth,
-    year:  curYear,
-    files: pendingFiles.slice()
-  };
-  entries.push(newEntry);
-  closeModal();
-  render();
-  // sauvegarde GIST désactivée temporairement
-  localStorage.setItem("budget_local", JSON.stringify(entries));
-  showToast("Ajouté ✓");
-});
-
-
-// ── FICHIERS ──
-document.getElementById("pick-file-btn").addEventListener("click", function(e){
-  e.stopPropagation();
-  document.getElementById("file-input").click();
-});
-
-document.getElementById("file-input").addEventListener("change", function(){
-  var self = this;
-  var preview = document.getElementById("file-preview");
-  Array.from(this.files).forEach(function(file){
-    if (file.size > MAX_BYTES) { showToast('"'+file.name+'" dépasse 10 MB'); return; }
-    var reader = new FileReader();
-    reader.onload = function(ev){
-      var id = Date.now().toString(36) + Math.random().toString(36).slice(2);
-      pendingFiles.push({ id:id, name:file.name, b64:ev.target.result, type:file.type });
-      var item = document.createElement("div");
-      item.className = "file-preview-item";
-      item.dataset.id = id;
-      item.innerHTML = '<span>📎 '+file.name+'</span><button type="button" class="file-remove">✕</button>';
-      item.querySelector(".file-remove").addEventListener("click", function(e){
-        e.stopPropagation();
-        removePending(id);
-      });
-      preview.appendChild(item);
-    };
-    reader.readAsDataURL(file);
+// ── SAVE — fonction globale simple ──
+function doSave() {
+  var title=document.getElementById("f-title").value.trim();
+  if(!title){ document.getElementById("f-title").focus(); return; }
+  var p=document.getElementById("f-price").value;
+  var t=document.getElementById("f-time").value;
+  entries.push({
+    id:Date.now().toString(), title:title,
+    price:p!==""?parseFloat(p):null,
+    time:t!==""?parseInt(t):null,
+    date:new Date().toISOString(),
+    month:curMonth, year:curYear,
+    files:pending.slice()
   });
-  self.value = "";
-});
-
-function removePending(id) {
-  pendingFiles = pendingFiles.filter(function(f){ return f.id !== id; });
-  var el = document.querySelector('.file-preview-item[data-id="'+id+'"]');
-  if (el) el.remove();
-}
-
-function deleteEntry(id) {
-  entries = entries.filter(function(e){ return e.id !== id; });
+  closeModal();
   render();
   saveData();
 }
 
-// ── FILE VIEWER ──
-document.getElementById("viewer-close").addEventListener("click", closeViewer);
-document.getElementById("viewer-download").addEventListener("click", downloadFile);
+// ── FICHIERS ──
+function handleFiles(input) {
+  var preview=document.getElementById("file-preview");
+  Array.from(input.files).forEach(function(file){
+    if(file.size>MAX_BYTES){ showToast('"'+file.name+'" dépasse 10 MB'); return; }
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var id=Date.now().toString(36)+Math.random().toString(36).slice(2);
+      pending.push({id:id,name:file.name,b64:ev.target.result,type:file.type});
+      var item=document.createElement("div"); item.className="file-preview-item"; item.dataset.id=id;
+      item.innerHTML='<span>📎 '+file.name+'</span><button type="button" class="file-remove" onclick="removePending(\''+id+'\')">✕</button>';
+      preview.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value="";
+}
+function removePending(id){
+  pending=pending.filter(function(f){return f.id!==id;});
+  var el=document.querySelector('.file-preview-item[data-id="'+id+'"]'); if(el)el.remove();
+}
 
-function viewFile(entryId, fileId) {
-  var entry = entries.find(function(e){ return e.id===entryId; });
-  if (!entry || !entry.files) return;
-  var file = entry.files.find(function(f){ return f.id===fileId; });
-  if (!file) return;
-  viewerFile = file;
-  document.getElementById("viewer-name").textContent = file.name;
-  var img = document.getElementById("viewer-img");
-  if (file.type && file.type.startsWith("image/")) { img.src = file.b64; img.style.display = "block"; }
-  else { img.style.display = "none"; }
+function delEntry(id){ entries=entries.filter(function(e){return e.id!==id;}); render(); saveData(); }
+
+// ── VIEWER ──
+function viewFile(eid,fid){
+  var e=entries.find(function(e){return e.id===eid;}); if(!e||!e.files)return;
+  var f=e.files.find(function(f){return f.id===fid;}); if(!f)return;
+  viewer=f;
+  document.getElementById("viewer-name").textContent=f.name;
+  var img=document.getElementById("viewer-img");
+  if(f.type&&f.type.startsWith("image/")){ img.src=f.b64; img.style.display="block"; } else { img.style.display="none"; }
   document.getElementById("file-viewer").classList.add("open");
 }
-
-function closeViewer() {
-  document.getElementById("file-viewer").classList.remove("open");
-  document.getElementById("viewer-img").src = "";
-  viewerFile = null;
-}
-
-function downloadFile() {
-  if (!viewerFile) return;
-  var a = document.createElement("a");
-  a.href = viewerFile.b64;
-  a.download = viewerFile.name;
-  a.click();
-}
+function closeViewer(){ document.getElementById("file-viewer").classList.remove("open"); document.getElementById("viewer-img").src=""; viewer=null; }
+function downloadFile(){ if(!viewer)return; var a=document.createElement("a"); a.href=viewer.b64; a.download=viewer.name; a.click(); }
 
 // ── INIT ──
 (function(){
-  if (!GH_TOKEN) {
-    document.getElementById("setup-screen").style.display = "flex";
-  } else {
-    document.getElementById("app-screen").style.display = "block";
-    loadData().then(function(){ render(); });
-  }
+  if(!GH_TOKEN){ document.getElementById("setup-screen").style.display="flex"; }
+  else { document.getElementById("app-screen").style.display="block"; loadData().then(render); }
 })();
 </script>
 </body>
