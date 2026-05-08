@@ -264,23 +264,32 @@ function onWrapClick(e) { if(e.target===document.getElementById("modal-wrap")) c
 
 // ── SAVE — fonction globale simple ──
 function doSave() {
-  alert("doSave appelé");
-  var title=document.getElementById("f-title").value.trim();
-  if(!title){ document.getElementById("f-title").focus(); return; }
-  var p=document.getElementById("f-price").value;
-  var t=document.getElementById("f-time").value;
-  entries.push({
-    id:Date.now().toString(), title:title,
-    price:p!==""?parseFloat(p):null,
-    time:t!==""?parseInt(t):null,
-    date:new Date().toISOString(),
-    month:curMonth, year:curYear,
-    files:pending.slice()
-  });
-  closeModal();
-  render();
-  saveData();
+  try {
+    var title = document.getElementById("f-title").value.trim();
+    alert("titre: " + title);
+    if(!title){ document.getElementById("f-title").focus(); return; }
+    var p = document.getElementById("f-price").value;
+    var t = document.getElementById("f-time").value;
+    alert("avant push - entries: " + entries.length);
+    entries.push({
+      id: Date.now().toString(), title: title,
+      price: p!==""?parseFloat(p):null,
+      time: t!==""?parseInt(t):null,
+      date: new Date().toISOString(),
+      month: curMonth, year: curYear,
+      files: pending.slice()
+    });
+    alert("après push - avant render");
+    closeModal();
+    render();
+    alert("après render - avant saveData");
+    saveData();
+    alert("fin doSave");
+  } catch(e) {
+    alert("ERREUR: " + e.message);
+  }
 }
+
 
 // ── FICHIERS ──
 function handleFiles(input) {
