@@ -52,9 +52,10 @@
     .file-chip { display:inline-flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:6px 10px; font-size:12px; color:var(--text2); max-width:160px; }
     .file-chip span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
-    #modal-wrap { display:none; background:rgba(0,0,0,0.4); padding:60px 0 0; min-height:100vh; }
-    #modal-wrap.open { display:block; }
-    #modal-box { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px 50px; }
+    #modal-wrap { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
+    #modal-wrap.open { display:flex; }
+    #modal-box { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px 50px; width:100%; max-width:430px; max-height:85vh; overflow-y:auto; animation:slideUp .25s ease; }
+    @keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
     .modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 20px; }
     .modal-title { font-size:18px; font-weight:700; margin-bottom:20px; }
     .field { margin-bottom:14px; }
