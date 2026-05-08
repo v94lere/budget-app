@@ -58,7 +58,7 @@
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
     .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
     .overlay.open { display:flex; }
-    .modal { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px)); width:100%; max-width:430px; animation:slideUp .25s ease; max-height:90dvh; overflow-y:auto; }
+    .modal { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px calc(80px + env(safe-area-inset-bottom,0px)); width:100%; max-width:430px; animation:slideUp .25s ease; max-height:90dvh; overflow-y:auto; }
     @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
     .modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; margin:0 auto 20px; }
     .modal-title { font-size:18px; font-weight:700; margin-bottom:20px; }
