@@ -372,8 +372,11 @@ document.getElementById("save-btn").addEventListener("touchend", function(e){
   entries.push(newEntry);
   closeModal();
   render();
-  saveData();
+  // sauvegarde GIST désactivée temporairement
+  localStorage.setItem("budget_local", JSON.stringify(entries));
+  showToast("Ajouté ✓");
 });
+
 
 // ── FICHIERS ──
 document.getElementById("pick-file-btn").addEventListener("click", function(e){
