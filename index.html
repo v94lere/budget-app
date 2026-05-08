@@ -353,8 +353,8 @@ document.getElementById("backdrop").addEventListener("click", closeModal);
 document.getElementById("cancel-btn").addEventListener("click", closeModal);
 
 // ── SAVE — synchrone, pas d'async sur le handler ──
-document.getElementById("save-btn").addEventListener("click", function(e){
-  e.stopPropagation();
+document.getElementById("save-btn").addEventListener("touchend", function(e){
+  e.preventDefault();
   var title = document.getElementById("f-title").value.trim();
   if (!title) { document.getElementById("f-title").focus(); return; }
   var p = document.getElementById("f-price").value;
