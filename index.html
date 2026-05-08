@@ -264,6 +264,7 @@ function onWrapClick(e) { if(e.target===document.getElementById("modal-wrap")) c
 
 // ── SAVE — fonction globale simple ──
 function doSave() {
+  alert("doSave appelé");
   var title=document.getElementById("f-title").value.trim();
   if(!title){ document.getElementById("f-title").focus(); return; }
   var p=document.getElementById("f-price").value;
