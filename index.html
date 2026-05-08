@@ -5,40 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Budget" />
-  <title>Budget</title>
+  <meta name="apple-mobile-web-app-title" content="Mon Budget" />
+  <title>Mon Budget</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f4f0; --surface: #ffffff; --text: #1a1a18; --text2: #7a7972; --text3: #b0afa8;
       --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
-      --accent: #1a1a18; --accent-fg: #ffffff; --danger: #c0392b; --warn: #e67e22;
+      --accent: #1a1a18; --accent-fg: #ffffff; --danger: #c0392b;
       --radius: 14px; --radius-sm: 9px;
     }
     body { font-family: -apple-system,'SF Pro Text',sans-serif; background: var(--bg); color: var(--text); min-height:100dvh; }
-
-    /* LOGIN */
-    #login-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:32px 24px; gap:28px; }
-    .login-icon { width:72px; height:72px; background:var(--accent); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; }
-    .login-title { font-size:26px; font-weight:600; letter-spacing:-0.5px; text-align:center; }
-    .login-subtitle { font-size:14px; color:var(--text2); text-align:center; margin-top:6px; }
-    .login-form { width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px; }
-    .login-form input { width:100%; padding:14px 16px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; color:var(--text); outline:none; font-family:inherit; letter-spacing:2px; }
-    .login-form input:focus { border-color:var(--accent); }
-    .login-btn { width:100%; padding:14px; font-size:16px; font-weight:600; background:var(--accent); color:var(--accent-fg); border:none; border-radius:var(--radius-sm); cursor:pointer; font-family:inherit; }
-    .login-btn:disabled { opacity:0.4; cursor:not-allowed; }
-    .login-error { font-size:13px; color:var(--danger); text-align:center; min-height:18px; }
-    .login-warn { font-size:13px; color:var(--warn); text-align:center; min-height:18px; }
-
-    /* APP */
+    #setup-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:32px 24px; gap:24px; }
+    .setup-icon { width:72px; height:72px; background:var(--accent); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; }
+    .setup-title { font-size:22px; font-weight:700; letter-spacing:-0.5px; text-align:center; }
+    .setup-sub { font-size:14px; color:var(--text2); text-align:center; line-height:1.6; max-width:280px; }
+    .setup-form { width:100%; max-width:320px; display:flex; flex-direction:column; gap:12px; }
+    .setup-form input { width:100%; padding:14px 16px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; color:var(--text); outline:none; font-family:inherit; }
+    .setup-form input:focus { border-color:var(--accent); }
+    .setup-btn { width:100%; padding:14px; font-size:16px; font-weight:600; background:var(--accent); color:var(--accent-fg); border:none; border-radius:var(--radius-sm); cursor:pointer; font-family:inherit; }
+    .setup-error { font-size:13px; color:var(--danger); text-align:center; min-height:18px; }
     #app-screen { display:none; }
     .safe-top { height:env(safe-area-inset-top,0px); }
-    .safe-bot  { height:calc(env(safe-area-inset-bottom,0px) + 8px); }
+    .safe-bot { height:calc(env(safe-area-inset-bottom,0px) + 8px); }
     .app { max-width:430px; margin:0 auto; padding:0 16px; }
     .app-header { display:flex; justify-content:space-between; align-items:center; padding:20px 0 16px; }
     .app-title { font-size:28px; font-weight:700; letter-spacing:-0.8px; }
-    .header-actions { display:flex; gap:8px; }
-    .icon-btn { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--border2); background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; }
+    .header-actions { display:flex; gap:8px; align-items:center; }
+    .sync-status { font-size:11px; color:var(--text3); }
     .add-btn { width:38px; height:38px; border-radius:50%; background:var(--accent); border:none; color:#fff; font-size:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
     .month-nav { display:flex; align-items:center; justify-content:space-between; background:#fff; border-radius:var(--radius); padding:10px 16px; margin-bottom:14px; border:1px solid var(--border); }
     .nav-btn { background:none; border:none; font-size:20px; color:var(--text2); cursor:pointer; padding:4px 8px; }
@@ -57,14 +51,11 @@
     .entry-values { text-align:right; flex-shrink:0; }
     .entry-price { font-size:15px; font-weight:600; }
     .entry-time { font-size:12px; color:var(--text2); margin-top:2px; }
-    .entry-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; }
     .del-btn { background:none; border:none; cursor:pointer; color:var(--text3); font-size:16px; padding:4px; line-height:1; }
     .files-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
     .file-chip { display:flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); cursor:pointer; max-width:140px; }
     .file-chip span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
-
-    /* MODAL */
     .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
     .overlay.open { display:flex; }
     .modal { background:#fff; border-radius:24px 24px 0 0; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px)); width:100%; max-width:430px; animation:slideUp .25s ease; max-height:90dvh; overflow-y:auto; }
@@ -77,7 +68,6 @@
     .field input:focus { border-color:var(--accent); }
     .file-upload-area { border:1.5px dashed var(--border2); border-radius:var(--radius-sm); padding:16px; text-align:center; cursor:pointer; background:var(--bg); color:var(--text2); font-size:14px; position:relative; }
     .file-upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-    .file-upload-area:hover { border-color:var(--accent); }
     .file-preview { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
     .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--text2); max-width:160px; }
     .file-preview-item span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -86,59 +76,36 @@
     .modal-actions { display:flex; gap:10px; margin-top:20px; }
     .btn-cancel { flex:1; padding:14px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:none; cursor:pointer; font-size:15px; font-family:inherit; color:var(--text2); }
     .btn-save { flex:2; padding:14px; border:none; border-radius:var(--radius-sm); background:var(--accent); color:#fff; cursor:pointer; font-size:15px; font-weight:600; font-family:inherit; }
-
-    /* SETUP */
-    #setup-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:32px 24px; gap:28px; }
-
-    /* FILE VIEWER */
     #file-viewer { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
     #file-viewer.open { display:flex; }
     #viewer-close { position:absolute; top:calc(16px + env(safe-area-inset-top,0px)); right:16px; background:none; border:none; color:#fff; font-size:28px; cursor:pointer; padding:8px; }
     #viewer-name { color:#fff; font-size:13px; margin-bottom:16px; opacity:0.7; max-width:300px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     #viewer-img { max-width:100%; max-height:70dvh; border-radius:12px; display:none; }
     #viewer-download { margin-top:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+    #toast { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%) translateY(80px); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:all .3s ease; z-index:300; white-space:nowrap; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-icon">💰</div>
-  <div>
-    <div class="login-title">Mon Budget</div>
-    <div class="login-subtitle" id="login-subtitle">Accès privé</div>
-  </div>
-  <div class="login-form">
-    <input type="password" id="pwd-input" placeholder="Mot de passe" autocomplete="current-password" />
-    <div class="login-error" id="login-error"></div>
-    <div class="login-warn" id="login-warn"></div>
-    <button class="login-btn" id="login-btn" onclick="checkPassword()">Connexion</button>
-  </div>
-</div>
-
-<!-- SETUP (première utilisation) -->
 <div id="setup-screen">
-  <div class="login-icon">🔑</div>
-  <div>
-    <div class="login-title">Créer un mot de passe</div>
-    <div class="login-subtitle">Première utilisation — choisissez votre mot de passe</div>
-  </div>
-  <div class="login-form">
-    <input type="password" id="s-pwd1" placeholder="Nouveau mot de passe" autocomplete="new-password" />
-    <input type="password" id="s-pwd2" placeholder="Confirmer le mot de passe" autocomplete="new-password" />
-    <div class="login-error" id="setup-error"></div>
-    <button class="login-btn" onclick="setupPassword()">Créer le mot de passe</button>
+  <div class="setup-icon">💰</div>
+  <div class="setup-title">Mon Budget</div>
+  <div class="setup-sub">Configuration initiale.<br>Entrez le code fourni par votre fils.</div>
+  <div class="setup-form">
+    <input type="password" id="s-token" placeholder="Code d'accès" autocomplete="off" />
+    <div class="setup-error" id="setup-error"></div>
+    <button class="setup-btn" onclick="setupToken()">Continuer</button>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app-screen">
   <div class="safe-top"></div>
   <div class="app">
     <div class="app-header">
-      <span class="app-title">Budget</span>
+      <span class="app-title">Mon Budget</span>
       <div class="header-actions">
-        <button class="icon-btn" onclick="logout()" title="Déconnexion">🔒</button>
+        <span class="sync-status" id="sync-status"></span>
         <button class="add-btn" onclick="openModal()">+</button>
       </div>
     </div>
@@ -157,19 +124,18 @@
   <div class="safe-bot"></div>
 </div>
 
-<!-- MODAL AJOUT -->
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nouvelle entrée</div>
-    <div class="field"><label>Titre</label><input type="text" id="f-title" placeholder="Ex: Course, Prestation…" /></div>
+    <div class="field"><label>Titre</label><input type="text" id="f-title" placeholder="Ex: Courses, Médecin…" /></div>
     <div class="row">
       <div class="field"><label>Prix (€)</label><input type="number" id="f-price" placeholder="0,00" step="0.01" min="0" inputmode="decimal" /></div>
       <div class="field"><label>Temps (min)</label><input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" /></div>
     </div>
     <div class="field">
-      <label>Fichiers joints (max 2 MB)</label>
-      <div class="file-upload-area" id="upload-area">
+      <label>Fichier joint (max 2 MB)</label>
+      <div class="file-upload-area">
         📎 Appuyer pour joindre un fichier
         <input type="file" id="f-files" multiple onchange="handleFiles(this)" />
       </div>
@@ -182,7 +148,6 @@
   </div>
 </div>
 
-<!-- FILE VIEWER -->
 <div id="file-viewer">
   <button id="viewer-close" onclick="closeViewer()">✕</button>
   <div id="viewer-name"></div>
@@ -190,191 +155,169 @@
   <button id="viewer-download" onclick="downloadFile()">⬇ Télécharger</button>
 </div>
 
-<script>
-// ── CONSTANTES ──
+<div id="toast"></div>
 
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS   = 15 * 60 * 1000; // 15 min
-const SESSION_MS   = 30 * 60 * 1000; // 30 min inactivité
-const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2 MB
+<script>
+const GIST_ID   = "fe6bbcd9c76caa4c8539f370c6e31dd2";
+const GIST_FILE = "data.json";
+const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 
-// ── CRYPTO HELPERS ──
-async function sha256(str) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-
-async function deriveKey(password, salt) {
-  const enc = new TextEncoder();
-  const raw = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey(
-    { name:"PBKDF2", salt, iterations:200000, hash:"SHA-256" },
-    raw, { name:"AES-GCM", length:256 }, false, ["encrypt","decrypt"]
-  );
-}
-
-async function encrypt(plaintext, password) {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv   = crypto.getRandomValues(new Uint8Array(12));
-  const key  = await deriveKey(password, salt);
-  const enc  = new TextEncoder();
-  const ct   = await crypto.subtle.encrypt({ name:"AES-GCM", iv }, key, enc.encode(plaintext));
-  const out  = new Uint8Array(salt.length + iv.length + ct.byteLength);
-  out.set(salt, 0); out.set(iv, 16); out.set(new Uint8Array(ct), 28);
-  return btoa(String.fromCharCode(...out));
-}
-
-async function decrypt(b64, password) {
-  const raw  = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
-  const salt = raw.slice(0,16);
-  const iv   = raw.slice(16,28);
-  const ct   = raw.slice(28);
-  const key  = await deriveKey(password, salt);
-  const pt   = await crypto.subtle.decrypt({ name:"AES-GCM", iv }, key, ct);
-  return new TextDecoder().decode(pt);
-}
-
-// ── SESSION ──
-let sessionKey = null;
-let sessionTimer = null;
-
-function resetSessionTimer() {
-  clearTimeout(sessionTimer);
-  sessionTimer = setTimeout(() => { logout(); }, SESSION_MS);
-}
-
-document.addEventListener("touchstart", resetSessionTimer);
-document.addEventListener("click", resetSessionTimer);
-
-// ── LOGIN / LOCKOUT ──
-function getLockout() {
-  const d = JSON.parse(localStorage.getItem("auth_lock") || '{"attempts":0,"until":0}');
-  return d;
-}
-function setLockout(d) { localStorage.setItem("auth_lock", JSON.stringify(d)); }
-
-// ── SETUP (première utilisation) ──
-async function setupPassword() {
-  const p1 = document.getElementById("s-pwd1").value;
-  const p2 = document.getElementById("s-pwd2").value;
-  const err = document.getElementById("setup-error");
-  if (p1.length < 6) { err.textContent = "Mot de passe trop court (6 caractères min)."; return; }
-  if (p1 !== p2)     { err.textContent = "Les mots de passe ne correspondent pas."; return; }
-  const hash = await sha256(p1);
-  localStorage.setItem("pwd_hash", hash);
-  document.getElementById("setup-screen").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-}
-
-async function checkPassword() {
-  const storedHash = localStorage.getItem("pwd_hash");
-  if (!storedHash) {
-    // pas encore de mot de passe défini
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("setup-screen").style.display = "flex";
-    return;
-  }
-
-  const lock = getLockout();
-  if (lock.until > Date.now()) {
-    const mins = Math.ceil((lock.until - Date.now()) / 60000);
-    document.getElementById("login-error").textContent = "";
-    document.getElementById("login-warn").textContent = `Trop de tentatives. Réessayez dans ${mins} min.`;
-    return;
-  }
-
-  const val  = document.getElementById("pwd-input").value;
-  const hash = await sha256(val);
-
-  if (hash === storedHash) {
-    setLockout({ attempts:0, until:0 });
-    sessionKey = val;
-    sessionStorage.setItem("auth","1");
-    resetSessionTimer();
-    await loadData();
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("app-screen").style.display = "block";
-    render();
-  } else {
-    lock.attempts = (lock.attempts || 0) + 1;
-    const remaining = MAX_ATTEMPTS - lock.attempts;
-    if (lock.attempts >= MAX_ATTEMPTS) {
-      lock.until = Date.now() + LOCKOUT_MS;
-      document.getElementById("login-warn").textContent = "Compte bloqué 15 minutes.";
-      document.getElementById("login-error").textContent = "";
-      document.getElementById("login-btn").disabled = true;
-      setTimeout(() => { document.getElementById("login-btn").disabled = false; document.getElementById("login-warn").textContent = ""; }, LOCKOUT_MS);
-    } else {
-      document.getElementById("login-error").textContent = `Mot de passe incorrect. ${remaining} tentative(s) restante(s).`;
-    }
-    setLockout(lock);
-    document.getElementById("pwd-input").value = "";
-  }
-}
-
-document.getElementById("pwd-input").addEventListener("keydown", e => { if (e.key==="Enter") checkPassword(); });
-document.getElementById("s-pwd1").addEventListener("keydown", e => { if (e.key==="Enter") document.getElementById("s-pwd2").focus(); });
-document.getElementById("s-pwd2").addEventListener("keydown", e => { if (e.key==="Enter") setupPassword(); });
-
-// ── INIT : affiche setup si pas encore de mot de passe ──
-(function init() {
-  if (!localStorage.getItem("pwd_hash")) {
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("setup-screen").style.display = "flex";
-  }
-})();
-
-function logout() {
-  clearTimeout(sessionTimer);
-  sessionKey = null;
-  sessionStorage.removeItem("auth");
-  entries = [];
-  document.getElementById("app-screen").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-  document.getElementById("pwd-input").value = "";
-  document.getElementById("login-error").textContent = "";
-  document.getElementById("login-warn").textContent = "";
-}
-
-// ── DATA (chiffrée) ──
+let GH_TOKEN = localStorage.getItem("gh_token") || "";
 let entries = [];
+let currentMonth = new Date().getMonth();
+let currentYear  = new Date().getFullYear();
+let pendingFiles = [];
+let viewerFile   = null;
+
+async function setupToken() {
+  const val = document.getElementById("s-token").value.trim();
+  const err = document.getElementById("setup-error");
+  if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) {
+    err.textContent = "Code invalide. Contactez votre fils."; return;
+  }
+  err.textContent = "Vérification…";
+  const ok = await testToken(val);
+  if (!ok) { err.textContent = "Code incorrect ou expiré."; return; }
+  localStorage.setItem("gh_token", val);
+  GH_TOKEN = val;
+  document.getElementById("setup-screen").style.display = "none";
+  document.getElementById("app-screen").style.display = "block";
+  await loadData();
+  render();
+}
+
+async function testToken(token) {
+  try {
+    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+      headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
+    });
+    return r.ok;
+  } catch { return false; }
+}
 
 async function loadData() {
-  const raw = localStorage.getItem("budget_enc");
-  if (!raw) { entries = []; return; }
+  setSyncStatus("⏳");
   try {
-    const json = await decrypt(raw, sessionKey);
-    entries = JSON.parse(json);
-  } catch(e) { entries = []; }
+    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+      headers: { "Authorization": "token " + GH_TOKEN, "Accept": "application/vnd.github.v3+json" }
+    });
+    if (!r.ok) throw new Error();
+    const gist = await r.json();
+    const raw  = (gist.files[GIST_FILE] && gist.files[GIST_FILE].content) || "[]";
+    entries = JSON.parse(raw);
+    setSyncStatus("✓");
+  } catch {
+    entries = JSON.parse(localStorage.getItem("budget_local") || "[]");
+    setSyncStatus("⚠️ hors ligne");
+  }
 }
 
 async function saveData() {
-  const json = JSON.stringify(entries);
-  const enc  = await encrypt(json, sessionKey);
-  localStorage.setItem("budget_enc", enc);
+  localStorage.setItem("budget_local", JSON.stringify(entries));
+  setSyncStatus("⏳");
+  try {
+    const body = { files: {} };
+    body.files[GIST_FILE] = { content: JSON.stringify(entries) };
+    const r = await fetch("https://api.github.com/gists/" + GIST_ID, {
+      method: "PATCH",
+      headers: {
+        "Authorization": "token " + GH_TOKEN,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error();
+    setSyncStatus("✓");
+    showToast("Sauvegardé ✓");
+  } catch {
+    setSyncStatus("⚠️ non sync");
+    showToast("Sauvegarde locale uniquement");
+  }
 }
 
-// ── FICHIERS TEMPORAIRES ──
-let pendingFiles = []; // { name, b64, type }
+function setSyncStatus(s) { document.getElementById("sync-status").textContent = s; }
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+function fmtPrice(v) { return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €"; }
+function fmtTime(min) { const h=Math.floor(min/60),m=min%60; return h+"h"+String(m).padStart(2,"0"); }
+function fileIcon(type) {
+  if (!type) return "📎";
+  if (type.startsWith("image/")) return "🖼";
+  if (type === "application/pdf") return "📄";
+  return "📎";
+}
+
+function render() {
+  document.getElementById("month-label").textContent = MONTHS[currentMonth] + " " + currentYear;
+  const filtered = entries.filter(e => e.month === currentMonth && e.year === currentYear);
+  const totalPrice = filtered.reduce((s,e) => s + (e.price != null ? e.price : 0), 0);
+  const totalTime  = filtered.reduce((s,e) => s + (e.time  != null ? e.time  : 0), 0);
+  document.getElementById("total-price").textContent = filtered.some(e=>e.price!=null) ? fmtPrice(totalPrice) : "—";
+  document.getElementById("total-time").textContent  = filtered.some(e=>e.time!=null)  ? fmtTime(totalTime)   : "—";
+  const list = document.getElementById("entries-list");
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>';
+    return;
+  }
+  list.innerHTML = filtered.slice().reverse().map(e => {
+    const filesHtml = e.files && e.files.length
+      ? '<div class="files-row">' + e.files.map(f =>
+          '<div class="file-chip" onclick="viewFile(\'' + e.id + '\',\'' + f.id + '\')">' +
+          '<span>' + fileIcon(f.type) + ' ' + f.name + '</span></div>'
+        ).join("") + '</div>'
+      : "";
+    return '<div class="entry">' +
+      '<div class="entry-main">' +
+        '<div class="entry-left">' +
+          '<div class="entry-title">' + e.title + '</div>' +
+          '<div class="entry-date">' + new Date(e.date).toLocaleDateString("fr-FR") + '</div>' +
+        '</div>' +
+        '<div class="entry-values">' +
+          (e.price != null ? '<div class="entry-price">' + fmtPrice(e.price) + '</div>' : '') +
+          (e.time  != null ? '<div class="entry-time">'  + fmtTime(e.time)   + '</div>' : '') +
+        '</div>' +
+        '<button class="del-btn" onclick="deleteEntry(\'' + e.id + '\')">✕</button>' +
+      '</div>' + filesHtml + '</div>';
+  }).join("");
+}
+
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  render();
+}
+
+function openModal() {
+  ["f-title","f-price","f-time"].forEach(id => document.getElementById(id).value = "");
+  pendingFiles = [];
+  document.getElementById("file-preview").innerHTML = "";
+  document.getElementById("overlay").classList.add("open");
+  setTimeout(() => document.getElementById("f-title").focus(), 150);
+}
+function closeModal() { document.getElementById("overlay").classList.remove("open"); }
+function handleOverlayClick(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
 
 function handleFiles(input) {
   const preview = document.getElementById("file-preview");
   Array.from(input.files).forEach(file => {
-    if (file.size > MAX_FILE_BYTES) {
-      alert(`"${file.name}" dépasse 2 MB et ne peut pas être joint.`);
-      return;
-    }
+    if (file.size > MAX_FILE_BYTES) { showToast('"' + file.name + '" dépasse 2 MB'); return; }
     const reader = new FileReader();
-    reader.onload = e => {
-      const b64 = e.target.result;
-      const id  = Date.now().toString() + Math.random().toString(36).slice(2);
-      pendingFiles.push({ id, name: file.name, b64, type: file.type });
-
+    reader.onload = function(e) {
+      const id = Date.now().toString() + Math.random().toString(36).slice(2);
+      pendingFiles.push({ id: id, name: file.name, b64: e.target.result, type: file.type });
       const item = document.createElement("div");
       item.className = "file-preview-item";
       item.dataset.id = id;
-      item.innerHTML = `<span>📎 ${file.name}</span><button class="file-remove" onclick="removePending('${id}')">✕</button>`;
+      item.innerHTML = '<span>📎 ' + file.name + '</span><button class="file-remove" onclick="removePending(\'' + id + '\')">✕</button>';
       preview.appendChild(item);
     };
     reader.readAsDataURL(file);
@@ -384,85 +327,9 @@ function handleFiles(input) {
 
 function removePending(id) {
   pendingFiles = pendingFiles.filter(f => f.id !== id);
-  const el = document.querySelector(`.file-preview-item[data-id="${id}"]`);
+  const el = document.querySelector('.file-preview-item[data-id="' + id + '"]');
   if (el) el.remove();
 }
-
-// ── RENDER ──
-function fmtPrice(v) { return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
-function fmtTime(min) { const h=Math.floor(min/60),m=min%60; return h+" h "+String(m).padStart(2,"0"); }
-function fileIcon(type) {
-  if (!type) return "📎";
-  if (type.startsWith("image/")) return "🖼";
-  if (type === "application/pdf") return "📄";
-  if (type.includes("word")) return "📝";
-  if (type.includes("sheet") || type.includes("excel")) return "📊";
-  return "📎";
-}
-
-function render() {
-  document.getElementById("month-label").textContent = MONTHS[currentMonth]+" "+currentYear;
-  const filtered = entries.filter(e => e.month===currentMonth && e.year===currentYear);
-  const totalPrice = filtered.reduce((s,e)=>s+(e.price!=null?e.price:0),0);
-  const totalTime  = filtered.reduce((s,e)=>s+(e.time!=null?e.time:0),0);
-  document.getElementById("total-price").textContent = filtered.some(e=>e.price!=null) ? fmtPrice(totalPrice) : "—";
-  document.getElementById("total-time").textContent  = filtered.some(e=>e.time!=null)  ? fmtTime(totalTime)   : "—";
-
-  const list = document.getElementById("entries-list");
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>';
-    return;
-  }
-
-  list.innerHTML = filtered.slice().reverse().map(e => {
-    const filesHtml = e.files && e.files.length
-      ? `<div class="files-row">${e.files.map(f=>`
-          <div class="file-chip" onclick="viewFile('${e.id}','${f.id}')">
-            <span>${fileIcon(f.type)} ${f.name}</span>
-          </div>`).join("")}</div>`
-      : "";
-    return `
-      <div class="entry">
-        <div class="entry-main">
-          <div class="entry-left">
-            <div class="entry-title">${e.title}</div>
-            <div class="entry-date">${new Date(e.date).toLocaleDateString("fr-FR")}</div>
-          </div>
-          <div class="entry-values">
-            ${e.price!=null?`<div class="entry-price">${fmtPrice(e.price)}</div>`:""}
-            ${e.time!=null?`<div class="entry-time">${fmtTime(e.time)}</div>`:""}
-          </div>
-          <div class="entry-actions">
-            <button class="del-btn" onclick="deleteEntry('${e.id}')">✕</button>
-          </div>
-        </div>
-        ${filesHtml}
-      </div>`;
-  }).join("");
-}
-
-// ── NAVIGATION ──
-let currentMonth = new Date().getMonth();
-let currentYear  = new Date().getFullYear();
-
-function changeMonth(dir) {
-  currentMonth += dir;
-  if (currentMonth>11){currentMonth=0;currentYear++;}
-  if (currentMonth<0){currentMonth=11;currentYear--;}
-  render();
-}
-
-// ── MODAL ──
-function openModal() {
-  ["f-title","f-price","f-time"].forEach(id=>document.getElementById(id).value="");
-  pendingFiles = [];
-  document.getElementById("file-preview").innerHTML = "";
-  document.getElementById("overlay").classList.add("open");
-  setTimeout(()=>document.getElementById("f-title").focus(),150);
-}
-
-function closeModal() { document.getElementById("overlay").classList.remove("open"); }
-function handleOverlayClick(e) { if(e.target===document.getElementById("overlay"))closeModal(); }
 
 async function saveEntry() {
   const title = document.getElementById("f-title").value.trim();
@@ -471,51 +338,42 @@ async function saveEntry() {
   const t = document.getElementById("f-time").value;
   entries.push({
     id:    Date.now().toString(),
-    title,
-    price: p!==""?parseFloat(p):null,
-    time:  t!==""?parseInt(t):null,
+    title: title,
+    price: p !== "" ? parseFloat(p) : null,
+    time:  t !== "" ? parseInt(t)   : null,
     date:  new Date().toISOString(),
     month: currentMonth,
     year:  currentYear,
-    files: pendingFiles.map(f=>({id:f.id, name:f.name, b64:f.b64, type:f.type}))
+    files: pendingFiles.map(f => ({ id:f.id, name:f.name, b64:f.b64, type:f.type }))
   });
-  await saveData();
   closeModal();
   render();
+  await saveData();
 }
 
 async function deleteEntry(id) {
-  entries = entries.filter(e=>e.id!==id);
-  await saveData();
+  entries = entries.filter(e => e.id !== id);
   render();
+  await saveData();
 }
 
-// ── FILE VIEWER ──
-let viewerFile = null;
-
 function viewFile(entryId, fileId) {
-  const entry = entries.find(e=>e.id===entryId);
+  const entry = entries.find(e => e.id === entryId);
   if (!entry) return;
-  const file = entry.files.find(f=>f.id===fileId);
+  const file = entry.files && entry.files.find(f => f.id === fileId);
   if (!file) return;
   viewerFile = file;
   document.getElementById("viewer-name").textContent = file.name;
   const img = document.getElementById("viewer-img");
-  if (file.type && file.type.startsWith("image/")) {
-    img.src = file.b64;
-    img.style.display = "block";
-  } else {
-    img.style.display = "none";
-  }
+  if (file.type && file.type.startsWith("image/")) { img.src = file.b64; img.style.display = "block"; }
+  else { img.style.display = "none"; }
   document.getElementById("file-viewer").classList.add("open");
 }
-
 function closeViewer() {
   document.getElementById("file-viewer").classList.remove("open");
   document.getElementById("viewer-img").src = "";
   viewerFile = null;
 }
-
 function downloadFile() {
   if (!viewerFile) return;
   const a = document.createElement("a");
@@ -523,6 +381,15 @@ function downloadFile() {
   a.download = viewerFile.name;
   a.click();
 }
+
+(function init() {
+  if (!GH_TOKEN) {
+    document.getElementById("setup-screen").style.display = "flex";
+  } else {
+    document.getElementById("app-screen").style.display = "block";
+    loadData().then(render);
+  }
+})();
 </script>
 </body>
 </html>
