@@ -326,7 +326,6 @@ function changeMonth(dir) {
 // ── MODAL ──
 document.getElementById("open-modal-btn").addEventListener("click", openModal);
 document.getElementById("cancel-btn").addEventListener("click", closeModal);
-document.getElementById("save-btn").addEventListener("click", saveEntry);
 document.getElementById("overlay").addEventListener("click", function(e){
   if (e.target === this) closeModal();
 });
@@ -378,7 +377,7 @@ function removePending(id) {
   if (el) el.remove();
 }
 
-async function saveEntry() {
+document.getElementById("save-btn").addEventListener("click", function(){
   var title = document.getElementById("f-title").value.trim();
   if (!title) { document.getElementById("f-title").focus(); return; }
   var p = document.getElementById("f-price").value;
@@ -395,8 +394,9 @@ async function saveEntry() {
   });
   closeModal();
   render();
-  await saveData();
-}
+  saveData(); // sans await — on laisse tourner en arrière-plan
+});
+
 
 async function deleteEntry(id) {
   entries = entries.filter(function(e){ return e.id !== id; });
