@@ -15,7 +15,7 @@
       --accent: #1a1a18; --danger: #c0392b; --radius: 14px; --radius-sm: 9px;
     }
     body { font-family: -apple-system,'SF Pro Text',sans-serif; background:var(--bg); color:var(--text); }
-    #setup-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:32px 24px; gap:24px; }
+    #setup-screen, #unlock-screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:32px 24px; gap:24px; }
     .setup-icon { width:72px; height:72px; background:var(--accent); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; }
     .setup-title { font-size:22px; font-weight:700; text-align:center; }
     .setup-sub { font-size:14px; color:var(--text2); text-align:center; line-height:1.6; max-width:280px; }
@@ -68,13 +68,29 @@
 </head>
 <body>
 
+<!-- ÉTAPE 1 : config token (première fois) -->
 <div id="setup-screen">
+  <div class="setup-icon">💰</div>
   <div class="setup-title">Récapitulatif</div>
-  <div class="setup-sub">Configuration initiale.<br>Entrez le code fourni.</div>
+  <div class="setup-sub">Entrez le code d'accès fourni.</div>
   <div class="setup-form">
-    <input type="password" id="s-token" placeholder="Code d'accès" autocomplete="off" />
+    <input type="password" id="s-token" placeholder="Code d'accès (ghp_...)" autocomplete="off" />
+    <input type="password" id="s-pwd" placeholder="Choisissez un mot de passe" autocomplete="new-password" />
+    <input type="password" id="s-pwd2" placeholder="Confirmez le mot de passe" autocomplete="new-password" />
     <div class="setup-error" id="setup-error"></div>
     <button class="setup-btn" onclick="App.setup()">Continuer</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 2 : déverrouillage (lancements suivants) -->
+<div id="unlock-screen">
+  <div class="setup-icon">🔒</div>
+  <div class="setup-title">Récapitulatif</div>
+  <div class="setup-sub">Entrez votre mot de passe pour accéder à vos données.</div>
+  <div class="setup-form">
+    <input type="password" id="u-pwd" placeholder="Mot de passe" autocomplete="current-password" />
+    <div class="setup-error" id="unlock-error"></div>
+    <button class="setup-btn" onclick="App.unlock()">Déverrouiller</button>
   </div>
 </div>
 
@@ -136,39 +152,122 @@ var App = (function() {
   var MONTHS    = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 
   var token    = localStorage.getItem("gh_token") || "";
+  var cryptoKey = null; // clé AES dérivée du mot de passe
   var data     = [];
   var curMonth = new Date().getMonth();
   var curYear  = new Date().getFullYear();
 
+  // ── CRYPTO ──
+  function strToBytes(str) { return new TextEncoder().encode(str); }
+  function bytesToB64(buf) { return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
+  function b64ToBytes(b64) { return Uint8Array.from(atob(b64), function(c){ return c.charCodeAt(0); }); }
+
+  function deriveKey(password, salt) {
+    return crypto.subtle.importKey("raw", strToBytes(password), "PBKDF2", false, ["deriveKey"])
+      .then(function(k){
+        return crypto.subtle.deriveKey(
+          { name:"PBKDF2", salt:salt, iterations:200000, hash:"SHA-256" },
+          k, { name:"AES-GCM", length:256 }, false, ["encrypt","decrypt"]
+        );
+      });
+  }
+
+  function encrypt(plaintext) {
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var iv   = crypto.getRandomValues(new Uint8Array(12));
+    return deriveKey(cryptoKey, salt).then(function(key){
+      return crypto.subtle.encrypt({ name:"AES-GCM", iv:iv }, key, strToBytes(plaintext))
+        .then(function(ct){
+          var out = new Uint8Array(16 + 12 + ct.byteLength);
+          out.set(salt, 0); out.set(iv, 16); out.set(new Uint8Array(ct), 28);
+          return bytesToB64(out.buffer);
+        });
+    });
+  }
+
+  function decrypt(b64) {
+    var raw  = b64ToBytes(b64);
+    var salt = raw.slice(0,16);
+    var iv   = raw.slice(16,28);
+    var ct   = raw.slice(28);
+    return deriveKey(cryptoKey, salt).then(function(key){
+      return crypto.subtle.decrypt({ name:"AES-GCM", iv:iv }, key, ct)
+        .then(function(pt){ return new TextDecoder().decode(pt); });
+    });
+  }
+
+  function sha256(str) {
+    return crypto.subtle.digest("SHA-256", strToBytes(str))
+      .then(function(buf){ return bytesToB64(buf); });
+  }
+
+  // ── SETUP (première fois) ──
   function setup() {
-    var val = document.getElementById("s-token").value.trim();
-    var err = document.getElementById("setup-error");
-    if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) { err.textContent="Code invalide."; return; }
+    var val  = document.getElementById("s-token").value.trim();
+    var pwd  = document.getElementById("s-pwd").value;
+    var pwd2 = document.getElementById("s-pwd2").value;
+    var err  = document.getElementById("setup-error");
+    if (!val.startsWith("ghp_") && !val.startsWith("github_pat_")) { err.textContent="Code d'accès invalide."; return; }
+    if (pwd.length < 6) { err.textContent="Mot de passe trop court (6 caractères min)."; return; }
+    if (pwd !== pwd2)   { err.textContent="Les mots de passe ne correspondent pas."; return; }
     err.textContent = "Vérification…";
     fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+val,"Accept":"application/vnd.github.v3+json"} })
-      .then(function(r) {
+      .then(function(r){
         if (!r.ok) { document.getElementById("setup-error").textContent="Code incorrect ou expiré."; return; }
         localStorage.setItem("gh_token", val);
         token = val;
-        document.getElementById("setup-screen").style.display = "none";
-        document.getElementById("app-screen").style.display = "block";
-        loadData();
+        cryptoKey = pwd;
+        sha256(pwd).then(function(h){
+          localStorage.setItem("pwd_hash", h);
+          document.getElementById("setup-screen").style.display = "none";
+          document.getElementById("app-screen").style.display = "block";
+          data = [];
+          render();
+          showToast("Compte configuré ✓");
+        });
       })
       .catch(function(){ document.getElementById("setup-error").textContent="Erreur réseau."; });
   }
 
+  // ── UNLOCK (lancements suivants) ──
+  function unlock() {
+    var pwd = document.getElementById("u-pwd").value;
+    var err = document.getElementById("unlock-error");
+    sha256(pwd).then(function(h){
+      if (h !== localStorage.getItem("pwd_hash")) {
+        err.textContent = "Mot de passe incorrect.";
+        document.getElementById("u-pwd").value = "";
+        return;
+      }
+      cryptoKey = pwd;
+      document.getElementById("unlock-screen").style.display = "none";
+      document.getElementById("app-screen").style.display = "block";
+      loadData();
+    });
+  }
+
+  document.getElementById("u-pwd").addEventListener("keydown", function(e){ if(e.key==="Enter") App.unlock(); });
+  document.getElementById("s-token").addEventListener("keydown", function(e){ if(e.key==="Enter") document.getElementById("s-pwd").focus(); });
+  document.getElementById("s-pwd").addEventListener("keydown", function(e){ if(e.key==="Enter") document.getElementById("s-pwd2").focus(); });
+  document.getElementById("s-pwd2").addEventListener("keydown", function(e){ if(e.key==="Enter") App.setup(); });
+
+  // ── GIST ──
   function loadData() {
     setSyncStatus("⏳");
     fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json"} })
       .then(function(r){ return r.json(); })
       .then(function(gist){
-        var raw = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "[]";
-        data = JSON.parse(raw);
-        setSyncStatus("✓");
-        render();
+        var raw = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "";
+        if (!raw || raw === "[]" || raw === "") { data=[]; setSyncStatus("✓"); render(); return; }
+        return decrypt(raw).then(function(plain){
+          data = JSON.parse(plain);
+          setSyncStatus("✓");
+          render();
+        });
       })
       .catch(function(){
-        data = JSON.parse(localStorage.getItem("budget_local")||"[]");
+        var local = localStorage.getItem("budget_local");
+        data = local ? JSON.parse(local) : [];
         setSyncStatus("⚠️");
         render();
       });
@@ -177,11 +276,13 @@ var App = (function() {
   function saveData() {
     localStorage.setItem("budget_local", JSON.stringify(data));
     setSyncStatus("⏳");
-    var body = {files:{}}; body.files[GIST_FILE] = {content: JSON.stringify(data)};
-    fetch("https://api.github.com/gists/"+GIST_ID, {
-      method:"PATCH",
-      headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},
-      body: JSON.stringify(body)
+    encrypt(JSON.stringify(data)).then(function(enc){
+      var body = {files:{}}; body.files[GIST_FILE] = {content: enc};
+      return fetch("https://api.github.com/gists/"+GIST_ID, {
+        method:"PATCH",
+        headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},
+        body: JSON.stringify(body)
+      });
     })
     .then(function(r){ setSyncStatus(r.ok?"✓":"⚠️"); showToast(r.ok?"Sauvegardé ✓":"Non synchronisé"); })
     .catch(function(){ setSyncStatus("⚠️"); showToast("Hors ligne"); });
@@ -193,6 +294,7 @@ var App = (function() {
     setTimeout(function(){ t.classList.remove("show"); }, 2000);
   }
 
+  // ── RENDER ──
   function fmtP(v){ return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
   function fmtT(m){ var h=Math.floor(m/60),mn=m%60; return h+"h"+String(mn).padStart(2,"0"); }
 
@@ -251,15 +353,17 @@ var App = (function() {
     saveData();
   }
 
+  // ── INIT ──
   if (!token) {
     document.getElementById("setup-screen").style.display = "flex";
+  } else if (!localStorage.getItem("pwd_hash")) {
+    document.getElementById("setup-screen").style.display = "flex";
   } else {
-    document.getElementById("app-screen").style.display = "block";
-    loadData();
+    document.getElementById("unlock-screen").style.display = "flex";
   }
 
-  return { setup:setup, openModal:openModal, closeModal:closeModal, onWrapClick:onWrapClick,
-           doSave:doSave, changeMonth:changeMonth, delEntry:delEntry };
+  return { setup:setup, unlock:unlock, openModal:openModal, closeModal:closeModal,
+           onWrapClick:onWrapClick, doSave:doSave, changeMonth:changeMonth, delEntry:delEntry };
 
 })();
 </script>
