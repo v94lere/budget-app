@@ -255,13 +255,32 @@ var App = (function() {
     fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json"} })
       .then(function(r){ return r.json(); })
       .then(function(gist){
-        var raw = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content : "";
-        if (!raw || raw === "[]" || raw === "") { data=[]; setSyncStatus("✓"); render(); return; }
-        return decrypt(raw).then(function(plain){
-          data = JSON.parse(plain);
-          setSyncStatus("✓");
-          render();
-        });
+        var raw = gist.files[GIST_FILE] ? gist.files[GIST_FILE].content.trim() : "";
+        if (!raw || raw === "[]" || raw === "") {
+          data=[]; setSyncStatus("✓"); render(); return;
+        }
+        // Essaie de déchiffrer
+        decrypt(raw)
+          .then(function(plain){
+            data = JSON.parse(plain);
+            setSyncStatus("✓");
+            render();
+          })
+          .catch(function(){
+            // Données non chiffrées (ancien format) — on les lit directement
+            try {
+              data = JSON.parse(raw);
+              setSyncStatus("✓");
+              render();
+              // Re-sauvegarde immédiatement en chiffré
+              saveData();
+              showToast("Données migrées et chiffrées ✓");
+            } catch(e) {
+              data = [];
+              setSyncStatus("⚠️");
+              render();
+            }
+          });
       })
       .catch(function(){
         var local = localStorage.getItem("budget_local");
