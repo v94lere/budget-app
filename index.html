@@ -48,6 +48,13 @@
     .entry-price { font-size:15px; font-weight:600; }
     .entry-time { font-size:12px; color:var(--text2); margin-top:2px; }
     .del-btn { background:none; border:none; color:var(--text3); font-size:18px; padding:6px; min-width:32px; min-height:32px; font-family:inherit; }
+    #confirm-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:300; align-items:center; justify-content:center; padding:24px; }
+    #confirm-modal.open { display:flex; }
+    #confirm-box { background:#fff; border-radius:20px; padding:24px; width:100%; max-width:320px; text-align:center; }
+    #confirm-box p { font-size:16px; font-weight:500; margin-bottom:20px; color:var(--text); }
+    #confirm-actions { display:flex; gap:10px; }
+    #confirm-cancel { flex:1; padding:14px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; font-size:15px; font-family:inherit; color:var(--text2); }
+    #confirm-ok { flex:1; padding:14px; border:none; border-radius:var(--radius-sm); background:#c0392b; color:#fff; font-size:15px; font-weight:600; font-family:inherit; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
     #modal-wrap { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
     #modal-wrap.open { display:flex; }
@@ -139,7 +146,15 @@
     </div>
   </div>
 </div>
-
+<div id="confirm-modal">
+  <div id="confirm-box">
+    <p>Supprimer cette entrée ?</p>
+    <div id="confirm-actions">
+      <button id="confirm-cancel" onclick="App.confirmCancel()">Annuler</button>
+      <button id="confirm-ok" onclick="App.confirmOk()">Supprimer</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -363,11 +378,25 @@ var App = (function() {
     saveData();
   }
 
+  var pendingDeleteId = null;
+
   function delEntry(id) {
-    if (!confirm("Supprimer cette entrée ?")) return;
-    data = data.filter(function(e){ return e.id!==id; });
+    pendingDeleteId = id;
+    document.getElementById("confirm-modal").classList.add("open");
+  }
+  
+  function confirmOk() {
+    document.getElementById("confirm-modal").classList.remove("open");
+    if (!pendingDeleteId) return;
+    data = data.filter(function(e){ return e.id !== pendingDeleteId; });
+    pendingDeleteId = null;
     render();
     saveData();
+  }
+  
+  function confirmCancel() {
+    document.getElementById("confirm-modal").classList.remove("open");
+    pendingDeleteId = null;
   }
 
   // ── INIT ──
@@ -380,7 +409,8 @@ var App = (function() {
   }
 
   return { setup:setup, unlock:unlock, openModal:openModal, closeModal:closeModal,
-           onWrapClick:onWrapClick, doSave:doSave, changeMonth:changeMonth, delEntry:delEntry };
+         onWrapClick:onWrapClick, doSave:doSave, changeMonth:changeMonth, 
+         delEntry:delEntry, confirmOk:confirmOk, confirmCancel:confirmCancel };
 
 })();
 </script>
