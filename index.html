@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Mon Budget" />
-  <title>Recapitulatif</title>
+  <title>Mon Budget</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -48,9 +48,6 @@
     .entry-price { font-size:15px; font-weight:600; }
     .entry-time { font-size:12px; color:var(--text2); margin-top:2px; }
     .del-btn { background:none; border:none; color:var(--text3); font-size:18px; padding:6px; min-width:32px; min-height:32px; font-family:inherit; }
-    .files-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
-    .file-chip { display:inline-flex; align-items:center; gap:5px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; padding:6px 10px; font-size:12px; color:var(--text2); max-width:160px; }
-    .file-chip span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .empty { text-align:center; padding:48px 0 32px; color:var(--text2); font-size:14px; line-height:2; }
     #modal-wrap { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:flex-end; justify-content:center; }
     #modal-wrap.open { display:flex; }
@@ -61,21 +58,10 @@
     .field { margin-bottom:14px; }
     .field label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px; }
     .field input[type=text], .field input[type=number] { width:100%; padding:13px 14px; font-size:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); font-family:inherit; outline:none; display:block; }
-    .file-upload-btn { width:100%; padding:14px; font-size:14px; border:1.5px dashed var(--border2); border-radius:var(--radius-sm); background:var(--bg); color:var(--text2); font-family:inherit; text-align:center; display:block; border-style:dashed; }
-    .file-preview { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .file-preview-item { display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border2); border-radius:6px; padding:5px 8px; font-size:12px; color:var(--text2); }
-    .file-preview-item span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px; }
-    .file-remove { background:none; border:none; color:var(--text3); font-size:14px; padding:0 0 0 6px; font-family:inherit; }
     .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .modal-actions { display:flex; gap:10px; margin-top:24px; }
     .btn-cancel { flex:1; padding:16px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; font-size:15px; font-family:inherit; color:var(--text2); }
     .btn-save { flex:2; padding:16px; border:none; border-radius:var(--radius-sm); background:var(--accent); color:#fff; font-size:15px; font-weight:600; font-family:inherit; }
-    #file-viewer { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
-    #file-viewer.open { display:flex; }
-    #viewer-close { position:absolute; top:40px; right:16px; background:none; border:none; color:#fff; font-size:28px; padding:8px; }
-    #viewer-name { color:#fff; font-size:13px; margin-bottom:16px; opacity:0.7; max-width:300px; text-align:center; }
-    #viewer-img { max-width:100%; max-height:70vh; border-radius:12px; display:none; }
-    #viewer-download { margin-top:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:10px; font-size:15px; font-weight:600; font-family:inherit; }
     #toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:#1a1a18; color:#fff; padding:10px 20px; border-radius:20px; font-size:13px; opacity:0; transition:opacity .3s; z-index:500; pointer-events:none; }
     #toast.show { opacity:1; }
   </style>
@@ -83,7 +69,8 @@
 <body>
 
 <div id="setup-screen">
-  <div class="setup-title">Recapitulatif </div>
+  <div class="setup-icon">💰</div>
+  <div class="setup-title">Mon Budget</div>
   <div class="setup-sub">Configuration initiale.<br>Entrez le code fourni.</div>
   <div class="setup-form">
     <input type="password" id="s-token" placeholder="Code d'accès" autocomplete="off" />
@@ -95,7 +82,7 @@
 <div id="app-screen">
   <div class="app">
     <div class="app-header">
-      <span class="app-title">Recapitulatif</span>
+      <span class="app-title">Mon Budget</span>
       <div class="header-actions">
         <span class="sync-status" id="sync-status"></span>
         <button class="add-btn" onclick="App.openModal()">+</button>
@@ -133,11 +120,6 @@
         <input type="number" id="f-time" placeholder="60" min="0" inputmode="numeric" />
       </div>
     </div>
-    <div class="field">
-      <label>Fichiers joints (max 10 MB)</label>
-      <button type="button" class="file-upload-btn" onclick="document.getElementById('file-input').click()">📎 Appuyer pour joindre un fichier</button>
-      <div class="file-preview" id="file-preview"></div>
-    </div>
     <div class="modal-actions">
       <button type="button" class="btn-cancel" onclick="App.closeModal()">Annuler</button>
       <button type="button" class="btn-save" onclick="App.doSave()">Ajouter</button>
@@ -145,34 +127,20 @@
   </div>
 </div>
 
-<input type="file" id="file-input" multiple style="display:none" onchange="App.handleFiles(this)" />
-
-<div id="file-viewer">
-  <button id="viewer-close" onclick="App.closeViewer()">✕</button>
-  <div id="viewer-name"></div>
-  <img id="viewer-img" alt="" />
-  <button id="viewer-download" onclick="App.downloadFile()">⬇ Télécharger</button>
-</div>
-
 <div id="toast"></div>
 
 <script>
-// Tout dans un objet App — aucun conflit possible avec variables globales
 var App = (function() {
 
   var GIST_ID   = "fe6bbcd9c76caa4c8539f370c6e31dd2";
   var GIST_FILE = "data.json";
-  var MAX_BYTES = 10 * 1024 * 1024;
   var MONTHS    = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 
   var token    = localStorage.getItem("gh_token") || "";
-  var data     = [];   // <-- plus jamais "entries"
-  var pending  = [];
-  var viewer   = null;
+  var data     = [];
   var curMonth = new Date().getMonth();
   var curYear  = new Date().getFullYear();
 
-  // ── SETUP ──
   function setup() {
     var val = document.getElementById("s-token").value.trim();
     var err = document.getElementById("setup-error");
@@ -190,7 +158,6 @@ var App = (function() {
       .catch(function(){ document.getElementById("setup-error").textContent="Erreur réseau."; });
   }
 
-  // ── GIST ──
   function loadData() {
     setSyncStatus("⏳");
     fetch("https://api.github.com/gists/"+GIST_ID, { headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json"} })
@@ -227,10 +194,8 @@ var App = (function() {
     setTimeout(function(){ t.classList.remove("show"); }, 2000);
   }
 
-  // ── RENDER ──
   function fmtP(v){ return Number(v).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €"; }
   function fmtT(m){ var h=Math.floor(m/60),mn=m%60; return h+"h"+String(mn).padStart(2,"0"); }
-  function fIcon(t){ if(!t)return"📎"; if(t.startsWith("image/"))return"🖼"; if(t==="application/pdf")return"📄"; return"📎"; }
 
   function render() {
     document.getElementById("month-label").textContent = MONTHS[curMonth]+" "+curYear;
@@ -240,15 +205,11 @@ var App = (function() {
     var list = document.getElementById("entries-list");
     if (!f.length) { list.innerHTML='<div class="empty">Aucune entrée ce mois-ci.<br>Appuyez sur <strong>+</strong> pour en ajouter.</div>'; return; }
     list.innerHTML = f.slice().reverse().map(function(e){
-      var fh = e.files && e.files.length
-        ? '<div class="files-row">'+e.files.map(function(f){
-            return '<div class="file-chip" onclick="App.viewFile(\''+e.id+'\',\''+f.id+'\')"><span>'+fIcon(f.type)+" "+f.name+'</span></div>';
-          }).join("")+'</div>' : "";
       return '<div class="entry"><div class="entry-main">'+
         '<div class="entry-left"><div class="entry-title">'+e.title+'</div><div class="entry-date">'+new Date(e.date).toLocaleDateString("fr-FR")+'</div></div>'+
         '<div class="entry-values">'+(e.price!=null?'<div class="entry-price">'+fmtP(e.price)+'</div>':'')+(e.time!=null?'<div class="entry-time">'+fmtT(e.time)+'</div>':'')+'</div>'+
         '<button class="del-btn" onclick="App.delEntry(\''+e.id+'\')">✕</button>'+
-        '</div>'+fh+'</div>';
+        '</div></div>';
     }).join("");
   }
 
@@ -256,20 +217,15 @@ var App = (function() {
     curMonth+=d; if(curMonth>11){curMonth=0;curYear++;} if(curMonth<0){curMonth=11;curYear--;} render();
   }
 
-  // ── MODAL ──
   function openModal() {
     document.getElementById("f-title").value = "";
     document.getElementById("f-price").value = "";
     document.getElementById("f-time").value  = "";
-    document.getElementById("file-preview").innerHTML = "";
-    pending = [];
     document.getElementById("modal-wrap").classList.add("open");
-    window.scrollTo(0,0);
   }
   function closeModal() { document.getElementById("modal-wrap").classList.remove("open"); }
   function onWrapClick(e) { if(e.target===document.getElementById("modal-wrap")) closeModal(); }
 
-  // ── SAVE ──
   function doSave() {
     var title = document.getElementById("f-title").value.trim();
     if (!title) { document.getElementById("f-title").focus(); return; }
@@ -282,38 +238,11 @@ var App = (function() {
       time:  t!==""?parseInt(t):null,
       date:  new Date().toISOString(),
       month: curMonth,
-      year:  curYear,
-      files: pending.slice()
+      year:  curYear
     });
     closeModal();
     render();
     saveData();
-  }
-
-  // ── FICHIERS ──
-  function handleFiles(input) {
-    var preview = document.getElementById("file-preview");
-    Array.from(input.files).forEach(function(file){
-      if (file.size > MAX_BYTES) { showToast('"'+file.name+'" dépasse 10 MB'); return; }
-      var reader = new FileReader();
-      reader.onload = function(ev){
-        var id = Date.now().toString(36)+Math.random().toString(36).slice(2);
-        pending.push({id:id, name:file.name, b64:ev.target.result, type:file.type});
-        var item = document.createElement("div");
-        item.className = "file-preview-item";
-        item.dataset.id = id;
-        item.innerHTML = '<span>📎 '+file.name+'</span><button type="button" class="file-remove" onclick="App.removePending(\''+id+'\')">✕</button>';
-        preview.appendChild(item);
-      };
-      reader.readAsDataURL(file);
-    });
-    input.value = "";
-  }
-
-  function removePending(id) {
-    pending = pending.filter(function(f){ return f.id!==id; });
-    var el = document.querySelector('.file-preview-item[data-id="'+id+'"]');
-    if (el) el.remove();
   }
 
   function delEntry(id) {
@@ -322,22 +251,6 @@ var App = (function() {
     saveData();
   }
 
-  // ── VIEWER ──
-  function viewFile(eid, fid) {
-    var e = data.find(function(e){ return e.id===eid; });
-    if (!e||!e.files) return;
-    var f = e.files.find(function(f){ return f.id===fid; });
-    if (!f) return;
-    viewer = f;
-    document.getElementById("viewer-name").textContent = f.name;
-    var img = document.getElementById("viewer-img");
-    if (f.type&&f.type.startsWith("image/")){ img.src=f.b64; img.style.display="block"; } else { img.style.display="none"; }
-    document.getElementById("file-viewer").classList.add("open");
-  }
-  function closeViewer() { document.getElementById("file-viewer").classList.remove("open"); document.getElementById("viewer-img").src=""; viewer=null; }
-  function downloadFile() { if(!viewer)return; var a=document.createElement("a"); a.href=viewer.b64; a.download=viewer.name; a.click(); }
-
-  // ── INIT ──
   if (!token) {
     document.getElementById("setup-screen").style.display = "flex";
   } else {
@@ -346,8 +259,7 @@ var App = (function() {
   }
 
   return { setup:setup, openModal:openModal, closeModal:closeModal, onWrapClick:onWrapClick,
-           doSave:doSave, changeMonth:changeMonth, delEntry:delEntry, handleFiles:handleFiles,
-           removePending:removePending, viewFile:viewFile, closeViewer:closeViewer, downloadFile:downloadFile };
+           doSave:doSave, changeMonth:changeMonth, delEntry:delEntry };
 
 })();
 </script>
