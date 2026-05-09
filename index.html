@@ -245,6 +245,7 @@ var App = (function() {
   }
 
   function delEntry(id) {
+    if (!confirm("Supprimer cette entrée ?")) return;
     data = data.filter(function(e){ return e.id!==id; });
     render();
     saveData();
